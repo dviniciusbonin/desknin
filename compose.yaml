@@ -1,0 +1,7 @@
+﻿services:
+  desknin:
+    image: desknin
+    build:
+      context: .
+      dockerfile: DeskNin/Dockerfile
+

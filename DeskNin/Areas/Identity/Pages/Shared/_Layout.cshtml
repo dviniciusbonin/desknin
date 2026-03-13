@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR" id="theme-root">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - DeskNin</title>
+    <link rel="icon" type="image/svg+xml" href="~/img/favicon.svg"/>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/identity.css" asp-append-version="true"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        (function(){
+            var t=localStorage.getItem('desknin-theme')||'light';
+            document.documentElement.setAttribute('data-bs-theme',t);
+        })();
+    </script>
+</head>
+<body class="position-relative">
+    <div class="position-relative min-vh-100">
+        @* Botão toggle tema *@
+        <div class="position-absolute top-0 end-0 p-3">
+            <button type="button" id="theme-toggle-btn" class="btn btn-primary btn-sm d-flex align-items-center gap-2" aria-label="Alternar tema">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                </svg>
+                <span class="theme-label d-none d-sm-inline">Tema Escuro</span>
+            </button>
+        </div>
+
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/theme.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

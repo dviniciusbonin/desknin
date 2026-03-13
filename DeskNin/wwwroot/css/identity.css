@@ -1,0 +1,40 @@
+/* Tema claro - Figma: fundo #F9FAFB, card #FFFFFF */
+[data-bs-theme="light"] {
+  --bs-primary: #2563EB;
+  --bs-primary-rgb: 37, 99, 235;
+  --bs-body-bg: #FFFFFF;
+  --bs-secondary-bg: #F9FAFB;
+  --bs-body-color: #0F172A;
+  --bs-secondary-color: #334155;
+  --bs-border-color: #E2E8F0;
+}
+
+[data-bs-theme="light"] body,
+[data-bs-theme="light"] .desknin-auth-page {
+  background-color: #F9FAFB !important;
+}
+
+[data-bs-theme="light"] .desknin-auth-card {
+  background-color: #FFFFFF !important;
+}
+
+/* Tema escuro - Figma: fundo #0F172A, card #1E293B */
+[data-bs-theme="dark"] {
+  --bs-primary: #3B82F6;
+  --bs-primary-rgb: 59, 130, 246;
+  --bs-body-bg: #1E293B;
+  --bs-body-color: #E2E8F0;
+  --bs-secondary-bg: #0F172A;
+  --bs-secondary-color: #94A3B8;
+  --bs-tertiary-bg: #334155;
+  --bs-border-color: #334155;
+}
+
+[data-bs-theme="dark"] body,
+[data-bs-theme="dark"] .desknin-auth-page {
+  background-color: #0F172A !important;
+}
+
+[data-bs-theme="dark"] .desknin-auth-card {
+  background-color: #1E293B !important;
+}

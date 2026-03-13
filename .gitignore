@@ -1,0 +1,16 @@
+# Rider/JetBrains
+.idea/
+*.sln.iml
+*.idea/
+*.user
+
+# Build e Outputs
+bin/
+obj/
+Debug/
+Release/
+
+# Outros
+*.suo
+*.user
+*.userossc
