@@ -20,7 +20,7 @@ The goal of this project is to provide a simple platform for managing support ti
 ## Tech Stack
 
 <p>
-  <img src="https://skillicons.dev/icons?i=dotnet,cs,docker" />
+  <img src="https://skillicons.dev/icons?i=dotnet,cs,postgres,docker" />
 </p>
 
 ---
