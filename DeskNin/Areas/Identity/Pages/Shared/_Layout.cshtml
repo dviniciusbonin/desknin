@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" id="theme-root">
+<html lang="en" id="theme-root">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -18,17 +18,11 @@
     </script>
 </head>
 <body class="position-relative">
+    @{
+        ViewData["ThemeTogglePosition"] = "absolute";
+    }
     <div class="position-relative min-vh-100">
-        @* Botão toggle tema *@
-        <div class="position-absolute top-0 end-0 p-3">
-            <button type="button" id="theme-toggle-btn" class="btn btn-primary btn-sm d-flex align-items-center gap-2" aria-label="Alternar tema">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                </svg>
-                <span class="theme-label d-none d-sm-inline">Tema Escuro</span>
-            </button>
-        </div>
-
+        <partial name="~/Views/Shared/_ThemeToggle.cshtml"/>
         @RenderBody()
     </div>
 

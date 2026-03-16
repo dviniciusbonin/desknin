@@ -1,32 +1,40 @@
 @page
-@model Microsoft.AspNetCore.Identity.UI.V5.Pages.Account.Internal.RegisterModel
+@model DeskNin.Areas.Identity.Pages.Account.RegisterModel
 @{
-    ViewData["Title"] = "Cadastrar";
+    ViewData["Title"] = "Register";
+    ViewData["LogoSize"] = 64;
 }
 
 <div class="desknin-auth-page min-vh-100 d-flex align-items-center justify-content-center p-4">
     <div class="w-100" style="max-width: 28rem;">
-        @* Logo *@
         <div class="text-center mb-5">
-            <div class="mb-3">
-                <img src="~/img/logo.svg" alt="DeskNin" width="64" height="64"/>
-            </div>
-            <div class="fs-2 fw-semibold lh-sm">
-                <span class="text-secondary">Desk</span><span class="text-primary">Nin</span>
-            </div>
-            <p class="mt-2 small text-body-secondary">Sistema de Gerenciamento de Chamados</p>
+            <partial name="~/Views/Shared/_Logo.cshtml"/>
+            <p class="mt-2 small text-body-secondary">Ticket Management System</p>
         </div>
 
-        @* Register Card *@
         <div class="desknin-auth-card card shadow rounded-3 p-4 position-relative">
-            <h2 class="fs-4 fw-semibold mb-1">Criar sua conta</h2>
-            <p class="small text-body-secondary mb-4">Preencha os dados abaixo para se cadastrar no sistema</p>
+            <h2 class="fs-4 fw-semibold mb-1">Create your account</h2>
+            <p class="small text-body-secondary mb-4">Fill in the details below to sign up</p>
 
             <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
 
                 <div class="mb-3">
-                    <label asp-for="Input.Email" class="form-label small fw-medium">E-mail</label>
+                    <label asp-for="Input.Name" class="form-label small fw-medium">Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text text-body-secondary">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                        </span>
+                        <input asp-for="Input.Name" type="text" class="form-control" placeholder="Your name" autocomplete="name"/>
+                    </div>
+                    <span asp-validation-for="Input.Name" class="text-danger small"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.Email" class="form-label small fw-medium">Email</label>
                     <div class="input-group">
                         <span class="input-group-text text-body-secondary">
                             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -34,13 +42,13 @@
                                 <polyline points="22,6 12,13 2,6"/>
                             </svg>
                         </span>
-                        <input asp-for="Input.Email" type="email" class="form-control" placeholder="seu@email.com" autocomplete="username"/>
+                        <input asp-for="Input.Email" type="email" class="form-control" placeholder="you@example.com" autocomplete="username"/>
                     </div>
                     <span asp-validation-for="Input.Email" class="text-danger small"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Input.Password" class="form-label small fw-medium">Senha</label>
+                    <label asp-for="Input.Password" class="form-label small fw-medium">Password</label>
                     <div class="input-group">
                         <span class="input-group-text text-body-secondary">
                             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -54,7 +62,7 @@
                 </div>
 
                 <div class="mb-4">
-                    <label asp-for="Input.ConfirmPassword" class="form-label small fw-medium">Confirmar senha</label>
+                    <label asp-for="Input.ConfirmPassword" class="form-label small fw-medium">Confirm password</label>
                     <div class="input-group">
                         <span class="input-group-text text-body-secondary">
                             <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -67,20 +75,20 @@
                     <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
                 </div>
 
-                <button type="submit" class="btn btn-primary w-100 py-2 mb-4">Cadastrar</button>
+                <button type="submit" class="btn btn-primary w-100 py-2 mb-4">Register</button>
 
                 @if (Model.ExternalLogins?.Count > 0)
                 {
                     <div class="position-relative my-4">
                         <hr/>
-                        <span class="position-absolute top-50 start-50 translate-middle bg-body px-2 small text-body-secondary">ou</span>
+                        <span class="position-absolute top-50 start-50 translate-middle bg-body px-2 small text-body-secondary">or</span>
                     </div>
                     <div class="d-grid gap-2">
                         @foreach (var provider in Model.ExternalLogins)
                         {
                             <form asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="mb-0">
                                 <input type="hidden" name="provider" value="@provider.Name"/>
-                                <button type="submit" class="btn btn-outline-secondary w-100">Cadastrar com @provider.DisplayName</button>
+                                <button type="submit" class="btn btn-outline-secondary w-100">Sign up with @provider.DisplayName</button>
                             </form>
                         }
                     </div>
@@ -88,11 +96,11 @@
             </form>
 
             <p class="text-center mt-4 mb-0 small text-body-secondary">
-                Já tem uma conta? <a href="@Url.Page("/Account/Login", new { area = "Identity" })" class="link-primary text-decoration-none fw-medium">Entrar</a>
+                Already have an account? <a href="@Url.Page("/Account/Login", new { area = "Identity" })" class="link-primary text-decoration-none fw-medium">Sign in</a>
             </p>
         </div>
 
-        <p class="text-center mt-4 small text-body-secondary">© @DateTime.Now.Year DeskNin - Sistema de Gerenciamento de Chamados</p>
+        <p class="text-center mt-4 small text-body-secondary">© @DateTime.Now.Year DeskNin - Ticket Management System</p>
     </div>
 </div>
 

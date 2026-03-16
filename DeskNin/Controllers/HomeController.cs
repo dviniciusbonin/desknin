@@ -8,6 +8,8 @@ public class HomeController : Controller
 {
     public IActionResult Index()
     {
+        if (User.Identity?.IsAuthenticated == true)
+            return RedirectToAction(nameof(DashboardController.Index), "Dashboard");
         return View();
     }
 

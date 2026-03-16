@@ -1,0 +1,22 @@
+@{
+    var size = (int?)ViewData["LogoSize"] ?? 32;
+    var isLarge = size == 64;
+}
+@if (isLarge)
+{
+    <div class="mb-3">
+        <img src="~/img/logo.svg" alt="DeskNin" width="64" height="64"/>
+    </div>
+    <div class="desknin-wordmark fs-2 fw-semibold lh-sm">
+        <span class="text-secondary">Desk</span>
+        <span class="text-primary">N<span class="desknin-wordmark-i">i</span>n</span>
+    </div>
+}
+else
+{
+    <img src="~/img/logo.svg" alt="DeskNin" width="32" height="32"/>
+    <span class="desknin-wordmark fw-semibold">
+        <span class="text-secondary">Desk</span>
+        <span class="text-primary">N<span class="desknin-wordmark-i">i</span>n</span>
+    </span>
+}

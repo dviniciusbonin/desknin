@@ -1,0 +1,64 @@
+/* Dashboard: only what Bootstrap doesn't provide (sidebar width + nav hover for theme) */
+
+.desknin-sidebar {
+  width: 260px;
+  transition: width 0.2s ease, min-width 0.2s ease;
+}
+
+/* Hidden state on desktop: keep a thin rail with icons only */
+.desknin-sidebar-hidden {
+  width: 72px !important;
+  min-width: 72px !important;
+}
+
+.desknin-sidebar-hidden .nav-link span,
+.desknin-sidebar-hidden .fw-semibold {
+  display: none;
+}
+
+/* Nav links: hover uses theme variable (Bootstrap nav-link doesn't style by data-bs-theme) */
+.desknin-sidebar .nav-link:not(.active):hover {
+  background-color: var(--bs-tertiary-bg, rgba(0, 0, 0, 0.06));
+  color: var(--bs-body-color);
+}
+
+[data-bs-theme="light"] .desknin-sidebar .nav-link:not(.active):hover {
+  background-color: #E2E8F0;
+  color: #0F172A;
+}
+
+[data-bs-theme="dark"] .desknin-sidebar .nav-link:not(.active):hover {
+  background-color: #334155;
+  color: #E2E8F0;
+}
+
+/* Sidebar/main backgrounds use Bootstrap vars; ensure theme overrides like identity */
+[data-bs-theme="light"] .desknin-sidebar {
+  background-color: #FFFFFF !important;
+  border-right-color: #E2E8F0 !important;
+}
+
+[data-bs-theme="dark"] .desknin-sidebar {
+  background-color: #0F172A !important;
+  border-right-color: #334155 !important;
+}
+
+[data-bs-theme="light"] main.bg-body {
+  background-color: #F9FAFB !important;
+}
+
+[data-bs-theme="dark"] main.bg-body {
+  background-color: #1E293B !important;
+}
+
+@media (max-width: 767.98px) {
+  .desknin-sidebar {
+    width: 72px;
+  }
+  .desknin-sidebar .nav-link span {
+    display: none;
+  }
+  .desknin-sidebar .fw-semibold {
+    display: none;
+  }
+}

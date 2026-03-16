@@ -1,7 +1,28 @@
 ﻿services:
   desknin:
+    container_name: desknin-app
     image: desknin
     build:
       context: .
       dockerfile: DeskNin/Dockerfile
-
+  
+  database:
+    container_name: desknin-database
+    image: postgres:15
+    environment:
+      POSTGRES_USER: desknin-app
+      POSTGRES_PASSWORD: desknin
+      POSTGRES_DB: desknin
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER}']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      
+      
+volumes:
+  postgres_data:
