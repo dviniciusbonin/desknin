@@ -1,4 +1,5 @@
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -18,6 +19,27 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             if (!string.IsNullOrEmpty(tableName))
                 entityType.SetTableName(ToSnakeCase(tableName));
         }
+
+        modelBuilder.Entity<IdentityRole>().HasData(
+            new IdentityRole
+            {
+                Id = "ROLE_ADMIN",
+                Name = "Admin",
+                NormalizedName = "ADMIN"
+            },
+            new IdentityRole
+            {
+                Id = "ROLE_TECHNICAL",
+                Name = "Technical",
+                NormalizedName = "TECHNICAL"
+            },
+            new IdentityRole
+            {
+                Id = "ROLE_USER",
+                Name = "User",
+                NormalizedName = "USER"
+            }
+        );
     }
 
     /// <summary>
