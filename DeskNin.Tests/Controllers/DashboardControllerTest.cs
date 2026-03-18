@@ -13,7 +13,7 @@ public class DashboardControllerTest
     {
         var controller = new DashboardController();
         var result = controller.Index();
-        
-        Assert.IsType<ViewResult>(result);;
+
+        Assert.IsType<ViewResult>(result);
     }
 }
