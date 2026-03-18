@@ -14,3 +14,7 @@ Release/
 *.suo
 *.user
 *.userossc
+
+
+
+.env

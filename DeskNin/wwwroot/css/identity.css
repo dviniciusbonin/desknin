@@ -38,3 +38,43 @@
 [data-bs-theme="dark"] .desknin-auth-card {
   background-color: #1E293B !important;
 }
+
+.desknin-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  line-height: 1;
+}
+
+.desknin-wordmark-i {
+  position: relative;
+  display: inline-block;
+}
+
+.desknin-wordmark-i::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 1.05em;
+  width: 0.35em;
+  height: 0.35em;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #ffffff 0, #60A5FA 40%, #1D4ED8 100%);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.7);
+  animation: desknin-dot-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes desknin-dot-pulse {
+  0% {
+    transform: translate(-50%, 0) scale(1);
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.7);
+  }
+  50% {
+    transform: translate(-50%, -2px) scale(1.15);
+    box-shadow: 0 0 14px rgba(37, 99, 235, 0.9);
+  }
+  100% {
+    transform: translate(-50%, 0) scale(1);
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.7);
+  }
+}
