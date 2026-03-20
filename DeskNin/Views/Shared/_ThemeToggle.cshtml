@@ -1,13 +1,24 @@
 @{
+    var inline = ViewData["Inline"] as bool? ?? false;
+}
+@if (inline)
+{
+    <button type="button" class="theme-toggle-btn btn btn-outline-secondary btn-sm rounded-2 d-flex align-items-center justify-content-center p-2" aria-label="Toggle theme" title="Toggle theme">
+        <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        <span class="theme-label d-none" aria-hidden="true">Theme</span>
+    </button>
+}
+else
+{
     var position = ViewData["ThemeTogglePosition"] as string ?? "fixed";
     var wrapperClass = position == "absolute"
         ? "position-absolute top-0 end-0 p-3"
         : "position-fixed top-0 end-0 p-3";
     var wrapperStyle = position == "fixed" ? "z-index: 1030;" : "";
+    <div class="@wrapperClass" style="@wrapperStyle">
+        <button type="button" class="theme-toggle-btn btn btn-outline-secondary btn-sm rounded-2 d-flex align-items-center justify-content-center p-2" aria-label="Toggle theme" title="Toggle theme">
+            <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            <span class="theme-label d-none" aria-hidden="true">Theme</span>
+        </button>
+    </div>
 }
-<div class="@wrapperClass" style="@wrapperStyle">
-    <button type="button" id="theme-toggle-btn" class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center p-2" aria-label="Toggle theme" title="Toggle theme">
-        <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-        <span class="theme-label d-none" aria-hidden="true">Theme</span>
-    </button>
-</div>

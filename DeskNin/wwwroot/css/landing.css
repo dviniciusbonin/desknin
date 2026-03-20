@@ -1,0 +1,35 @@
+/* Landing - Bootstrap-first, minimal overrides */
+.landing-cta-box {
+  background: linear-gradient(135deg, var(--bs-primary) 0%, #1d4ed8 100%);
+}
+
+.landing-hero-title {
+  font-size: clamp(1.5rem, 5vw, 2.75rem);
+  line-height: 1.2;
+}
+
+.desknin-dashboard-preview {
+  min-height: 240px;
+  max-width: 100%;
+  min-width: 0; /* allow flex shrink */
+}
+
+.desknin-preview-sidebar {
+  width: 44px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 576px) {
+  .desknin-dashboard-preview {
+    min-height: 280px;
+  }
+  .desknin-preview-sidebar {
+    width: 56px;
+  }
+}
+
+@media (min-width: 992px) {
+  .desknin-dashboard-preview {
+    min-height: 360px;
+  }
+}

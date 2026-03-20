@@ -39,6 +39,16 @@
   background-color: #1E293B !important;
 }
 
+[data-bs-theme="light"] .desknin-navbar {
+  background-color: #F9FAFB !important;
+  border-bottom-color: #E2E8F0 !important;
+}
+
+[data-bs-theme="dark"] .desknin-navbar {
+  background-color: #0F172A !important;
+  border-bottom-color: #334155 !important;
+}
+
 .desknin-wordmark {
   display: inline-flex;
   align-items: baseline;
@@ -62,6 +72,17 @@
   background: radial-gradient(circle at 30% 30%, #ffffff 0, #60A5FA 40%, #1D4ED8 100%);
   box-shadow: 0 0 8px rgba(37, 99, 235, 0.7);
   animation: desknin-dot-pulse 1.8s ease-in-out infinite;
+}
+
+.desknin-navbar .theme-toggle-btn {
+  border-color: var(--bs-border-color);
+  color: var(--bs-body-color);
+}
+
+.desknin-navbar .theme-toggle-btn:hover {
+  border-color: var(--bs-primary);
+  color: var(--bs-primary);
+  background-color: transparent;
 }
 
 @keyframes desknin-dot-pulse {

@@ -1,6 +1,6 @@
 using DeskNin.Controllers;
+using DeskNin.Tests.TestHelpers;
 using JetBrains.Annotations;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeskNin.Tests.Controllers;
@@ -12,6 +12,8 @@ public class DashboardControllerTest
     public void Index_Returns_ViewResult()
     {
         var controller = new DashboardController();
+        controller.SetAnonymousUser();
+
         var result = controller.Index();
 
         Assert.IsType<ViewResult>(result);
