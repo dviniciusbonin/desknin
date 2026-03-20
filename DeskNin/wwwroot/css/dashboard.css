@@ -51,14 +51,50 @@
   background-color: #1E293B !important;
 }
 
+/* Mobile: sidebar hidden by default, overlay when open */
 @media (max-width: 767.98px) {
   .desknin-sidebar {
-    width: 72px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px !important;
+    min-width: 260px !important;
+    z-index: 1050;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    box-shadow: none;
   }
-  .desknin-sidebar .nav-link span {
-    display: none;
+  .desknin-sidebar.desknin-sidebar-open {
+    transform: translateX(0);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
   }
+  .desknin-sidebar .nav-link span,
   .desknin-sidebar .fw-semibold {
-    display: none;
+    display: inline !important;
+  }
+  .desknin-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+  .desknin-sidebar-backdrop.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  /* Desktop collapse class has no effect on mobile */
+  .desknin-sidebar-hidden.desknin-sidebar-open {
+    width: 260px !important;
+    min-width: 260px !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .desknin-sidebar-backdrop {
+    display: none !important;
   }
 }
