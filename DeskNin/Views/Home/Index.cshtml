@@ -1,8 +1,78 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "DeskNin";
+    ViewData["LandingLayout"] = true;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="min-vh-100 d-flex flex-column justify-content-center py-4 py-lg-5 overflow-x-hidden">
+    <div class="container flex-grow-1 d-flex align-items-center">
+        <div class="row align-items-center w-100 g-4">
+            <div class="col-12 col-lg-6 order-1">
+                <h1 class="landing-hero-title fw-bold mb-3 mb-lg-4">Streamline support with a modern ticket management system</h1>
+                <p class="lead text-body-secondary mb-3">
+                    DeskNin helps teams organize, track, and resolve customer requests efficiently.
+                    Get full visibility into your support workload and deliver faster responses.
+                </p>
+                <p class="text-body-secondary mb-4">
+                    Assign tickets, manage your team, and keep everyone in sync from a single dashboard.
+                    No more lost requests or missed follow-ups.
+                </p>
+                <ul class="list-unstyled text-body-secondary mb-4">
+                    <li class="d-flex align-items-center gap-2 mb-2">
+                        <span class="text-primary">✓</span> Track every ticket from creation to resolution
+                    </li>
+                    <li class="d-flex align-items-center gap-2 mb-2">
+                        <span class="text-primary">✓</span> Manage team roles and permissions
+                    </li>
+                    <li class="d-flex align-items-center gap-2">
+                        <span class="text-primary">✓</span> Stay on top with real-time notifications
+                    </li>
+                </ul>
+                <div class="d-flex flex-wrap gap-3 mb-4">
+                    <a class="btn btn-primary btn-lg px-4" asp-area="Identity" asp-page="/Account/Login">
+                        Sign in to get started
+                    </a>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6 order-2">
+                <div class="card rounded-3 overflow-hidden border desknin-dashboard-preview shadow mx-auto">
+                    <div class="d-flex">
+                        <div class="bg-body border-end p-2 desknin-preview-sidebar">
+                            <div class="rounded-1 bg-primary bg-opacity-25 mb-2" style="height: 24px;"></div>
+                            <div class="rounded-1 bg-secondary bg-opacity-50 mb-2" style="height: 28px;"></div>
+                            <div class="rounded-1 bg-secondary bg-opacity-50 mb-2" style="height: 28px;"></div>
+                            <div class="rounded-1 bg-secondary bg-opacity-50 mb-2" style="height: 28px;"></div>
+                            <div class="rounded-1 bg-secondary bg-opacity-50" style="height: 28px;"></div>
+                        </div>
+                        <div class="flex-grow-1 p-3">
+                            <div class="d-flex gap-2 mb-3">
+                                <div class="rounded-1 bg-secondary bg-opacity-50" style="height: 32px; width: 32px;"></div>
+                                <div class="rounded-1 bg-secondary bg-opacity-25 flex-grow-1" style="height: 32px;"></div>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <div class="rounded-2 border p-3 bg-body">
+                                        <div class="rounded-1 bg-primary bg-opacity-25 mb-2" style="height: 20px; width: 60%;"></div>
+                                        <div class="rounded-1 bg-secondary bg-opacity-25" style="height: 16px; width: 40%;"></div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="rounded-2 border p-3 bg-body">
+                                        <div class="rounded-1 bg-primary bg-opacity-25 mb-2" style="height: 20px; width: 50%;"></div>
+                                        <div class="rounded-1 bg-secondary bg-opacity-25" style="height: 16px; width: 35%;"></div>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="rounded-2 border p-3 bg-body">
+                                        <div class="rounded-1 bg-secondary bg-opacity-25 mb-2" style="height: 12px; width: 100%;"></div>
+                                        <div class="rounded-1 bg-secondary bg-opacity-25 mb-2" style="height: 12px; width: 90%;"></div>
+                                        <div class="rounded-1 bg-secondary bg-opacity-25" style="height: 12px; width: 70%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

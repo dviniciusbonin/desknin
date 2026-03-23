@@ -1,0 +1,73 @@
+@model UserForm
+@{
+    ViewData["Title"] = "Edit Member";
+    var roles = ViewBag.Roles as IEnumerable<string> ?? new[] { "Admin", "Technical", "User" };
+}
+
+<header class="mb-4">
+    <a asp-action="Index" class="text-body-secondary text-decoration-none small d-inline-flex align-items-center gap-1 mb-2">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Team
+    </a>
+    <h1 class="h3 fw-bold mb-1">Edit Member</h1>
+    <p class="text-body-secondary small mb-0">Update member details</p>
+</header>
+
+<div class="card border-0 shadow-sm rounded-3">
+    <div class="card-body p-4">
+        <form asp-action="Edit" method="post" autocomplete="off">
+            <input type="hidden" asp-for="Id"/>
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+            <div class="mb-3">
+                <label asp-for="Username" class="form-label"></label>
+                <input asp-for="Username" class="form-control rounded-2" autocomplete="off"/>
+                <span asp-validation-for="Username" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" type="email" class="form-control rounded-2" autocomplete="off"/>
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Role" class="form-label"></label>
+                <select asp-for="Role" class="form-select rounded-2" asp-items="@(new SelectList(roles))"></select>
+                <span asp-validation-for="Role" class="text-danger small"></span>
+            </div>
+            <div class="mb-4">
+                <label class="form-label">New password (optional)</label>
+                <div class="input-group">
+                    <input type="text" id="edit-Password-display" class="form-control rounded-2 font-monospace" readonly/>
+                    <input type="hidden" name="Password" id="edit-Password"/>
+                    <button type="button" class="btn btn-outline-secondary rounded-2" id="edit-pwd-generate">Generate</button>
+                    <button type="button" class="btn btn-outline-secondary rounded-2" id="edit-pwd-copy">Copy</button>
+                </div>
+                <small class="text-body-secondary">Leave empty to keep current password. Generate and send to user if changing.</small>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary rounded-2">Save</button>
+                <a asp-action="Index" class="btn btn-outline-secondary rounded-2">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+    <script>
+        function generatePassword() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@@#$%';
+            let pwd = '';
+            for (let i = 0; i < 12; i++) pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+            return pwd;
+        }
+        document.getElementById('edit-pwd-generate').addEventListener('click', function () {
+            const pwd = generatePassword();
+            document.getElementById('edit-Password-display').value = pwd;
+            document.getElementById('edit-Password').value = pwd;
+        });
+        document.getElementById('edit-pwd-copy').addEventListener('click', function () {
+            const pwd = document.getElementById('edit-Password-display').value;
+            if (pwd) navigator.clipboard.writeText(pwd).then(function () { this.textContent = 'Copied!'; setTimeout(function() { this.textContent = 'Copy'; }.bind(this), 1500); }.bind(this));
+        });
+    </script>
+}

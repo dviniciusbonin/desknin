@@ -13,8 +13,7 @@
     }
 
     function updateToggleIcon(theme) {
-        const btn = document.getElementById('theme-toggle-btn');
-        if (btn) {
+        document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
             const icon = btn.querySelector('svg');
             const label = btn.querySelector('.theme-label');
             if (theme === 'dark') {
@@ -24,7 +23,7 @@
                 if (icon) icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>';
                 if (label) label.textContent = 'Dark theme';
             }
-        }
+        });
     }
 
     function initTheme() {
@@ -40,10 +39,9 @@
     document.addEventListener('DOMContentLoaded', function () {
         initTheme();
 
-        const btn = document.getElementById('theme-toggle-btn');
-        if (btn) {
+        document.querySelectorAll('.theme-toggle-btn').forEach(function (btn) {
             btn.addEventListener('click', toggleTheme);
-        }
+        });
     });
 
     window.DeskNinTheme = { setTheme, toggleTheme, getStoredTheme };
