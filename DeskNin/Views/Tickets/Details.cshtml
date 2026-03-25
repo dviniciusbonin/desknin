@@ -1,0 +1,192 @@
+@model TicketDetailsViewModel
+@using DeskNin.Models
+
+@{
+    ViewData["Title"] = $"Ticket #{Model.Ticket.Id}";
+}
+
+<div class="d-flex flex-column gap-4">
+    <header class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        <div>
+            <h1 class="h3 fw-bold mb-1">@Model.Ticket.Title</h1>
+            <p class="text-body-secondary small mb-0">Ticket #@Model.Ticket.Id</p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            @if (Model.CanEditTicket)
+            {
+                <a asp-action="Edit" asp-route-id="@Model.Ticket.Id" class="btn btn-outline-secondary rounded-2">Edit</a>
+            }
+            <a asp-action="Index" class="btn btn-outline-secondary rounded-2">Back to list</a>
+        </div>
+    </header>
+
+    <div class="row g-4">
+        <div class="col-12 col-xl-8">
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+                        <partial name="_TicketStatusBadge" model="Model.Ticket.Status"/>
+                        <partial name="_TicketPriorityBadge" model="Model.Ticket.Priority"/>
+                    </div>
+                    <p class="mb-0 text-body-secondary">@Model.Description</p>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-transparent border-bottom py-3 px-4">
+                    <h2 class="h6 fw-bold mb-0">Comments (@Model.Comments.Count)</h2>
+                </div>
+                <div class="card-body p-4 border-bottom">
+                    <form asp-action="AddComment" method="post" class="d-flex flex-column gap-2">
+                        <input type="hidden" name="TicketId" value="@Model.Ticket.Id"/>
+                        <textarea name="Content" class="form-control rounded-2" rows="3" placeholder="Add a comment"></textarea>
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-sm rounded-2">Post comment</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-body p-0">
+                    @if (Model.Comments.Count == 0)
+                    {
+                        <p class="text-body-secondary small p-4 mb-0">No comments yet.</p>
+                    }
+                    else
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var comment in Model.Comments)
+                            {
+                                <li class="list-group-item py-3 px-4">
+                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                        <span class="fw-medium small">@comment.AuthorName</span>
+                                        <span class="small text-body-secondary">@comment.CreatedAtUtc.ToLocalTime().ToString("dd MMM yyyy HH:mm")</span>
+                                    </div>
+                                    <p class="mb-0 text-body-secondary small">@comment.Content</p>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-xl-4">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-header bg-transparent border-bottom py-3 px-4">
+                    <h2 class="h6 fw-bold mb-0">Details</h2>
+                </div>
+                <div class="card-body p-4 d-flex flex-column gap-3">
+                    <div>
+                        <p class="small text-body-secondary mb-1">Author</p>
+                        <p class="mb-0 fw-medium">@Model.Ticket.AuthorName</p>
+                    </div>
+                    <div>
+                        <p class="small text-body-secondary mb-1">Assigned technician</p>
+                        <p class="mb-0 fw-medium">@(!string.IsNullOrEmpty(Model.Ticket.AssignedTechnicianName) ? Model.Ticket.AssignedTechnicianName : "Unassigned")</p>
+                    </div>
+                    <div>
+                        <p class="small text-body-secondary mb-1">Created</p>
+                        <p class="mb-0 fw-medium">@Model.Ticket.CreatedAtUtc.ToLocalTime().ToString("dd MMM yyyy HH:mm")</p>
+                    </div>
+                    <div>
+                        <p class="small text-body-secondary mb-1">Updated</p>
+                        <p class="mb-0 fw-medium">@Model.Ticket.UpdatedAtUtc.ToLocalTime().ToString("dd MMM yyyy HH:mm")</p>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.CanManageWorkflow)
+            {
+                <div class="card border-0 shadow-sm rounded-3 mt-4">
+                    <div class="card-header bg-transparent border-bottom py-3 px-4">
+                        <h2 class="h6 fw-bold mb-0 d-flex align-items-center gap-2">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m3 17 6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+                            Workflow
+                        </h2>
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column gap-3">
+                        <form asp-action="Assign" method="post" class="desknin-workflow-block d-flex flex-column gap-2">
+                            <input type="hidden" name="id" value="@Model.Ticket.Id"/>
+                            <label class="form-label small mb-0 d-flex align-items-center gap-2">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                Assign technician
+                            </label>
+                            <select name="assignedTechnicianId" class="form-select rounded-2">
+                                <option value="">Unassigned</option>
+                                @foreach (var technician in Model.Technicians)
+                                {
+                                    if (technician.UserId == Model.Ticket.AssignedTechnicianId)
+                                    {
+                                        <option value="@technician.UserId" selected>@technician.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@technician.UserId">@technician.Name</option>
+                                    }
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm rounded-2">Save assignment</button>
+                        </form>
+
+                        <form asp-action="UpdateStatus" method="post" class="desknin-workflow-block d-flex flex-column gap-2">
+                            <input type="hidden" name="id" value="@Model.Ticket.Id"/>
+                            <label class="form-label small mb-0 d-flex align-items-center gap-2">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/></svg>
+                                Status
+                            </label>
+                            @if (Model.Ticket.Status == TicketStatus.Closed)
+                            {
+                                <select name="status" class="form-select rounded-2" disabled>
+                                    <option value="@TicketStatus.Closed" selected>Closed</option>
+                                </select>
+                                <button type="submit" class="btn btn-primary btn-sm rounded-2" disabled>Update status</button>
+                            }
+                            else
+                            {
+                                <select name="status" class="form-select rounded-2">
+                                    @foreach (var status in Enum.GetValues<TicketStatus>())
+                                    {
+                                        if (Model.Ticket.Status == status)
+                                        {
+                                            <option value="@status" selected>@status</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@status">@status</option>
+                                        }
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-primary btn-sm rounded-2">Update status</button>
+                            }
+                        </form>
+
+                        <form asp-action="UpdatePriority" method="post" class="desknin-workflow-block d-flex flex-column gap-2">
+                            <input type="hidden" name="id" value="@Model.Ticket.Id"/>
+                            <label class="form-label small mb-0 d-flex align-items-center gap-2">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m12 3 9 4.5-9 4.5-9-4.5L12 3Z"/><path d="M3 12l9 4.5 9-4.5"/><path d="M3 16.5 12 21l9-4.5"/></svg>
+                                Priority
+                            </label>
+                            <select name="priority" class="form-select rounded-2">
+                                @foreach (var priority in Enum.GetValues<TicketPriority>())
+                                {
+                                    if (Model.Ticket.Priority == priority)
+                                    {
+                                        <option value="@priority" selected>@priority</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@priority">@priority</option>
+                                    }
+                                }
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm rounded-2">Update priority</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

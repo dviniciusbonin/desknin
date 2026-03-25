@@ -1,0 +1,49 @@
+@model TicketFormViewModel
+@using DeskNin.Models
+
+@{
+    ViewData["Title"] = "Edit ticket";
+}
+
+<div class="mx-auto" style="max-width: 900px;">
+    <header class="mb-4">
+        <h1 class="h3 fw-bold mb-1">Edit ticket</h1>
+        <p class="text-body-secondary small mb-0">Update details and priority.</p>
+    </header>
+
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-body p-4">
+            <form asp-action="Edit" method="post" class="d-flex flex-column gap-3">
+                <input type="hidden" asp-for="Id"/>
+                <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+                <div>
+                    <label asp-for="Title" class="form-label"></label>
+                    <input asp-for="Title" class="form-control rounded-2"/>
+                    <span asp-validation-for="Title" class="text-danger small"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control rounded-2" rows="6"></textarea>
+                    <span asp-validation-for="Description" class="text-danger small"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Priority" class="form-label"></label>
+                    <select asp-for="Priority" asp-items="Html.GetEnumSelectList<TicketPriority>()" class="form-select rounded-2"></select>
+                    <span asp-validation-for="Priority" class="text-danger small"></span>
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+                    <button type="submit" class="btn btn-primary rounded-2">Save</button>
+                    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-secondary rounded-2">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,14 @@
+@model DeskNin.Models.TicketStatus
+
+@{
+    var (label, css) = Model switch
+    {
+        DeskNin.Models.TicketStatus.Open => ("Open", "desknin-ticket-status-open"),
+        DeskNin.Models.TicketStatus.InProgress => ("In Progress", "desknin-ticket-status-progress"),
+        DeskNin.Models.TicketStatus.Resolved => ("Resolved", "desknin-ticket-status-resolved"),
+        DeskNin.Models.TicketStatus.Closed => ("Closed", "desknin-ticket-status-closed"),
+        _ => ("Unknown", "desknin-ticket-status-open")
+    };
+}
+
+<span class="desknin-ticket-status @css">@label</span>

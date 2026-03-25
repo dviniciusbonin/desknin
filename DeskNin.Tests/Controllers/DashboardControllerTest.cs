@@ -1,21 +1,33 @@
 using DeskNin.Controllers;
+using DeskNin.Data;
 using DeskNin.Tests.TestHelpers;
+using DeskNin.ViewModels;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeskNin.Tests.Controllers;
 
 [TestSubject(typeof(DashboardController))]
-public class DashboardControllerTest
+public class DashboardControllerTest : IDisposable
 {
-    [Fact]
-    public void Index_Returns_ViewResult()
+    private readonly ApplicationDbContext _context;
+
+    public DashboardControllerTest()
     {
-        var controller = new DashboardController();
+        (_context, _, _) = IdentityTestHelpers.CreateIdentityServices();
+    }
+
+    public void Dispose() => _context.Dispose();
+
+    [Fact]
+    public async Task Index_Returns_ViewResult_With_DashboardViewModel()
+    {
+        var controller = new DashboardController(_context);
         controller.SetAnonymousUser();
 
-        var result = controller.Index();
+        var result = await controller.Index();
 
-        Assert.IsType<ViewResult>(result);
+        var viewResult = Assert.IsType<ViewResult>(result);
+        Assert.IsType<DashboardViewModel>(viewResult.Model);
     }
 }

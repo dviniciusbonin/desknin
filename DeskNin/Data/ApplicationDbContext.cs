@@ -1,4 +1,5 @@
 using System.Text;
+using DeskNin.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,9 @@ namespace DeskNin.Data;
 
 public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext(options)
 {
+    public DbSet<Ticket> Tickets { get; set; }
+    public DbSet<TicketComment> TicketComments { get; set; }
+
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -40,6 +44,47 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 NormalizedName = "USER"
             }
         );
+
+        modelBuilder.Entity<Ticket>(entity =>
+        {
+            entity.Property(t => t.Title).HasMaxLength(200).IsRequired();
+            entity.Property(t => t.Description).HasMaxLength(4000).IsRequired();
+            entity.Property(t => t.CreatedAtUtc).IsRequired();
+            entity.Property(t => t.UpdatedAtUtc).IsRequired();
+
+            entity.HasOne(t => t.Author)
+                .WithMany()
+                .HasForeignKey(t => t.AuthorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(t => t.AssignedTechnician)
+                .WithMany()
+                .HasForeignKey(t => t.AssignedTechnicianId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasIndex(t => t.Status);
+            entity.HasIndex(t => t.Priority);
+            entity.HasIndex(t => t.AssignedTechnicianId);
+            entity.HasIndex(t => t.CreatedAtUtc);
+        });
+
+        modelBuilder.Entity<TicketComment>(entity =>
+        {
+            entity.Property(c => c.Content).HasMaxLength(2000).IsRequired();
+            entity.Property(c => c.CreatedAtUtc).IsRequired();
+
+            entity.HasOne(c => c.Ticket)
+                .WithMany(t => t.Comments)
+                .HasForeignKey(c => c.TicketId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(c => c.Author)
+                .WithMany()
+                .HasForeignKey(c => c.AuthorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasIndex(c => new { c.TicketId, c.CreatedAtUtc });
+        });
     }
 
     /// <summary>

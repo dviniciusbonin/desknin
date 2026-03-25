@@ -35,7 +35,7 @@ public class TeamController : Controller
                 Name = user.UserName ?? user.Email ?? "-",
                 Email = user.Email ?? "",
                 Role = role != null ? role.Name ?? "User" : "User",
-                TicketCount = 0
+                TicketCount = _context.Tickets.Count(t => t.AuthorId == user.Id || t.AssignedTechnicianId == user.Id)
             }
         )
         .GroupBy(u => u.Id)

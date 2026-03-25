@@ -1,3 +1,5 @@
+@model DashboardViewModel
+
 @{
     ViewData["Title"] = "Dashboard";
 }
@@ -17,9 +19,8 @@
                             <span class="rounded-circle bg-primary" style="width: 8px; height: 8px;"></span>
                             Open
                         </span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-primary"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                     </div>
-                    <p class="h4 fw-bold mb-0">127</p>
+                    <p class="h4 fw-bold mb-0">@Model.OpenCount</p>
                 </div>
             </div>
         </div>
@@ -31,9 +32,8 @@
                             <span class="rounded-circle bg-warning" style="width: 8px; height: 8px;"></span>
                             In progress
                         </span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-warning"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                     </div>
-                    <p class="h4 fw-bold mb-0">43</p>
+                    <p class="h4 fw-bold mb-0">@Model.InProgressCount</p>
                 </div>
             </div>
         </div>
@@ -45,42 +45,35 @@
                             <span class="rounded-circle bg-success" style="width: 8px; height: 8px;"></span>
                             Resolved
                         </span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-success"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                     </div>
-                    <p class="h4 fw-bold mb-0">18</p>
+                    <p class="h4 fw-bold mb-0">@Model.ResolvedCount</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm rounded-3">
-        <div class="card-header bg-transparent border-bottom py-3 px-4">
-            <h2 class="h6 fw-bold mb-0">Recent tickets</h2>
-        </div>
-        <div class="card-body p-0">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item d-flex align-items-center justify-content-between py-3 px-4 border-0 border-bottom">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="fw-medium">#1231</span>
-                        <span class="text-body-secondary">Example ticket 1</span>
-                    </div>
-                    <span class="badge bg-primary rounded-pill">Open</span>
-                </li>
-                <li class="list-group-item d-flex align-items-center justify-content-between py-3 px-4 border-0 border-bottom">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="fw-medium">#1232</span>
-                        <span class="text-body-secondary">Example ticket 2</span>
-                    </div>
-                    <span class="badge bg-primary rounded-pill">Open</span>
-                </li>
-                <li class="list-group-item d-flex align-items-center justify-content-between py-3 px-4">
-                    <div class="d-flex align-items-center gap-2">
-                        <span class="fw-medium">#1233</span>
-                        <span class="text-body-secondary">Example ticket 3</span>
-                    </div>
-                    <span class="badge bg-primary rounded-pill">Open</span>
-                </li>
-            </ul>
-        </div>
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="h5 fw-bold mb-0">Recent tickets</h2>
+        <a asp-controller="Tickets" asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-2">View all</a>
     </div>
+
+    @if (Model.RecentTickets.Count == 0)
+    {
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body p-4 text-center text-body-secondary">
+                No tickets created yet.
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var ticket in Model.RecentTickets)
+            {
+                <div class="col-12 col-xl-6">
+                    <partial name="_TicketCard" model="ticket"/>
+                </div>
+            }
+        </div>
+    }
 </div>
