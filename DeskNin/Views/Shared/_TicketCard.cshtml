@@ -1,0 +1,30 @@
+@model TicketItemViewModel
+
+<article class="card border-0 shadow-sm rounded-4 desknin-ticket-card h-100 position-relative">
+    <div class="card-body p-4 d-flex flex-column gap-3">
+        <div class="d-flex align-items-center justify-content-between gap-2">
+            <p class="mb-0 desknin-ticket-number">#@Model.Id</p>
+            <div class="d-flex align-items-center gap-2">
+                <partial name="_TicketPriorityBadge" model="Model.Priority"/>
+                <partial name="_TicketStatusBadge" model="Model.Status"/>
+            </div>
+        </div>
+
+        <div>
+            <h3 class="h5 fw-semibold mb-2 desknin-ticket-title" title="@Model.Title">@Model.Title</h3>
+            <p class="mb-0 text-body-secondary desknin-ticket-description">@Model.DescriptionPreview</p>
+        </div>
+
+        <div class="d-flex align-items-end justify-content-between mt-auto gap-3">
+            <div class="min-w-0">
+                <div class="fw-medium desknin-ticket-author text-truncate" title="@Model.AuthorName">By @Model.AuthorName</div>
+                <div class="small text-body-secondary desknin-ticket-working text-truncate" title="@Model.AssignedTechnicianName">
+                    Working: @(string.IsNullOrEmpty(Model.AssignedTechnicianName) ? "Unassigned" : Model.AssignedTechnicianName)
+                </div>
+            </div>
+            <span class="desknin-ticket-time text-nowrap">@Model.CreatedAtUtc.ToLocalTime().ToString("dd MMM HH:mm")</span>
+        </div>
+
+        <a asp-controller="Tickets" asp-action="Details" asp-route-id="@Model.Id" class="stretched-link" aria-label="Open ticket @Model.Title"></a>
+    </div>
+</article>

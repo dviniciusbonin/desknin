@@ -1,0 +1,83 @@
+@model TicketListViewModel
+@using DeskNin.Models
+
+@{
+    ViewData["Title"] = "Tickets";
+}
+
+<div>
+    <header class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
+        <div>
+            <h1 class="h3 fw-bold mb-1">Tickets</h1>
+            <p class="text-body-secondary small mb-0">Track and manage support requests.</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary rounded-2">Create ticket</a>
+    </header>
+
+    @{
+        var hasFilter = Model.SelectedStatus.HasValue;
+        var resetDisabledClass = hasFilter ? "" : " disabled";
+    }
+
+    <form method="get" class="card border-0 shadow-sm rounded-3 mb-4">
+        <div class="card-body p-3">
+            <div class="row g-2 align-items-end">
+                <div class="col-12 col-md-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="desknin-filter-pill d-inline-flex align-items-center justify-content-center">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="M3 4h18"/>
+                                <path d="M7 4v6l10 0v-6"/>
+                                <path d="M10 10v10"/>
+                            </svg>
+                        </span>
+                        <span class="fw-semibold">Filter</span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <label for="status" class="small text-body-secondary mb-1">Status</label>
+                    <select id="status" name="status" class="form-select rounded-2 desknin-filter-select">
+                        <option value="">All</option>
+                        @foreach (var status in Enum.GetValues<TicketStatus>())
+                        {
+                            if (Model.SelectedStatus == status)
+                            {
+                                <option value="@status" selected>@status</option>
+                            }
+                            else
+                            {
+                                <option value="@status">@status</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-12 col-md-5 d-flex justify-content-md-end gap-2">
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-2@resetDisabledClass">Reset</a>
+                    <button type="submit" class="btn btn-primary btn-sm rounded-2">Apply</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    @if (Model.Tickets.Count == 0)
+    {
+        <div class="card border-0 shadow-sm rounded-3">
+            <div class="card-body p-4 text-center text-body-secondary">
+                No tickets found for this filter.
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var ticket in Model.Tickets)
+            {
+                <div class="col-12 col-lg-6">
+                    <partial name="_TicketCard" model="ticket"/>
+                </div>
+            }
+        </div>
+    }
+</div>

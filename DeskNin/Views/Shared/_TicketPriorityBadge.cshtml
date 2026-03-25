@@ -1,0 +1,19 @@
+@model DeskNin.Models.TicketPriority
+
+@{
+    var (label, css, icon) = Model switch
+    {
+        DeskNin.Models.TicketPriority.Low => ("Low", "desknin-ticket-priority-low", "<path d=\"M12 19V5\"/><path d=\"m7 10 5-5 5 5\"/>"),
+        DeskNin.Models.TicketPriority.Medium => ("Medium", "desknin-ticket-priority-medium", "<path d=\"M4 12h16\"/>"),
+        DeskNin.Models.TicketPriority.High => ("High", "desknin-ticket-priority-high", "<path d=\"M12 5v14\"/><path d=\"m7 14 5 5 5-5\"/>"),
+        DeskNin.Models.TicketPriority.Critical => ("Critical", "desknin-ticket-priority-critical", "<path d=\"M12 8v5\"/><path d=\"M12 16h.01\"/><path d=\"M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z\"/>"),
+        _ => ("Medium", "desknin-ticket-priority-medium", "<path d=\"M4 12h16\"/>")
+    };
+}
+
+<span class="desknin-ticket-priority @css">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        @Html.Raw(icon)
+    </svg>
+    @label
+</span>
