@@ -76,6 +76,18 @@ public class LoginModel : PageModel
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in.");
+
+                var roles = await _userManager.GetRolesAsync(user);
+                var isBasicUser = roles.Contains("User") && !roles.Contains("Admin") && !roles.Contains("Technical");
+
+                // Role User cannot access Dashboard: force My Tickets when returnUrl is empty or dashboard.
+                if (isBasicUser && (string.IsNullOrWhiteSpace(returnUrl) || IsDashboardReturnUrl(returnUrl)))
+                    return LocalRedirect(Url.Content("~/Tickets/MyTickets"));
+
+                // No explicit return target: role-based default.
+                if (!Request.Query.ContainsKey("returnUrl"))
+                    return LocalRedirect(isBasicUser ? Url.Content("~/Tickets/MyTickets") : Url.Content("~/Dashboard"));
+
                 return LocalRedirect(returnUrl);
             }
             if (result.IsLockedOut)
@@ -89,5 +101,14 @@ public class LoginModel : PageModel
 
         ReturnUrl = returnUrl;
         return Page();
+    }
+
+    private static bool IsDashboardReturnUrl(string? returnUrl)
+    {
+        if (string.IsNullOrWhiteSpace(returnUrl))
+            return true;
+
+        var normalized = returnUrl.Trim().ToLowerInvariant();
+        return normalized == "/dashboard" || normalized == "~/dashboard";
     }
 }

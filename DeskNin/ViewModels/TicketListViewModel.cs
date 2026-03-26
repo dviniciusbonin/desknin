@@ -6,4 +6,5 @@ public sealed class TicketListViewModel
 {
     public List<TicketItemViewModel> Tickets { get; set; } = [];
     public TicketStatus? SelectedStatus { get; set; }
+    public bool AssignedToMe { get; set; }
 }

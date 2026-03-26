@@ -54,16 +54,17 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>
     <script>
-        function generatePassword() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@@#$%';
-            let pwd = '';
-            for (let i = 0; i < 12; i++) pwd += chars.charAt(Math.floor(Math.random() * chars.length));
-            return pwd;
-        }
         document.getElementById('edit-pwd-generate').addEventListener('click', function () {
-            const pwd = generatePassword();
-            document.getElementById('edit-Password-display').value = pwd;
-            document.getElementById('edit-Password').value = pwd;
+            const btn = this;
+            btn.disabled = true;
+            fetch('@Url.Action("GeneratePassword", "Team")', { method: 'GET', headers: { 'Accept': 'application/json' } })
+                .then(r => r.ok ? r.json() : Promise.reject())
+                .then(data => {
+                    const pwd = data.password || '';
+                    document.getElementById('edit-Password-display').value = pwd;
+                    document.getElementById('edit-Password').value = pwd;
+                })
+                .finally(() => { btn.disabled = false; });
         });
         document.getElementById('edit-pwd-copy').addEventListener('click', function () {
             const pwd = document.getElementById('edit-Password-display').value;

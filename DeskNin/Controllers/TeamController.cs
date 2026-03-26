@@ -1,4 +1,5 @@
 using DeskNin.Data;
+using DeskNin.Services;
 using DeskNin.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -13,12 +14,25 @@ public class TeamController : Controller
     private readonly ApplicationDbContext _context;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly IPasswordGenerator _passwordGenerator;
 
-    public TeamController(ApplicationDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+    public TeamController(
+        ApplicationDbContext context,
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        IPasswordGenerator passwordGenerator)
     {
         _context = context;
         _userManager = userManager;
         _roleManager = roleManager;
+        _passwordGenerator = passwordGenerator;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GeneratePassword()
+    {
+        var password = await _passwordGenerator.GenerateIdentityCompliantPasswordAsync();
+        return Json(new { password });
     }
 
     public async Task<IActionResult> Index()

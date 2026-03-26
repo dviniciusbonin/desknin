@@ -1,0 +1,56 @@
+@model IReadOnlyList<DeskNin.ViewModels.TicketItemViewModel>
+
+@functions {
+    private static string FormatAgo(DateTime utcTime)
+    {
+        var diff = DateTime.UtcNow - utcTime;
+        if (diff.TotalSeconds < 60) return "just now";
+        if (diff.TotalMinutes < 60) return $"{(int)diff.TotalMinutes}m ago";
+        if (diff.TotalHours < 48) return $"{(int)diff.TotalHours}h ago";
+        return utcTime.ToLocalTime().ToString("dd MMM");
+    }
+}
+
+<section class="card border-0 shadow-sm rounded-4 h-100 desknin-dashboard-card">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h2 class="h5 fw-bold mb-0">Recent tickets</h2>
+        </div>
+
+        @if (Model.Count == 0)
+        {
+            <div class="text-center text-body-secondary p-4">No recent tickets.</div>
+        }
+        else
+        {
+            <div class="desknin-dashboard-recent-list">
+                @foreach (var item in Model)
+                {
+                    <div class="desknin-dashboard-recent-row">
+                        <div class="min-w-0">
+                            <div class="text-truncate">
+                                <span class="desknin-dashboard-recent-id">#@item.Id</span>
+                                <span class="ms-2 text-truncate">@item.Title</span>
+                            </div>
+
+                            <div class="small text-body-secondary text-truncate mt-1">
+                                <span class="fw-semibold text-body-secondary">@item.AuthorName</span>
+                                <span class="mx-1">•</span>
+                                @{
+                                    var updated = item.UpdatedAtUtc > item.CreatedAtUtc;
+                                    var label = updated ? "Updated" : "Created";
+                                    var ago = updated ? FormatAgo(item.UpdatedAtUtc) : FormatAgo(item.CreatedAtUtc);
+                                }
+                                <span>@label @ago</span>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <partial name="_TicketStatusBadge" model="item.Status" />
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
