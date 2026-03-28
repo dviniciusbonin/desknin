@@ -15,8 +15,14 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
     private readonly ApplicationDbContext _context = context;
     private readonly UserManager<IdentityUser> _userManager = userManager;
 
-    public async Task<IActionResult> Index(TicketStatus? status = null)
+    [Authorize(Roles = "Admin,Technical")]
+    public async Task<IActionResult> Index(TicketStatus? status = null, bool assignedToMe = false)
     {
+        if (!Request.Query.ContainsKey("status"))
+            status = TicketStatus.Open;
+
+        var userId = GetCurrentUserId();
+
         var query = _context.Tickets
             .AsNoTracking()
             .Include(t => t.Author)
@@ -26,6 +32,14 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
 
         if (status.HasValue)
             query = query.Where(t => t.Status == status.Value);
+
+        if (assignedToMe)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return Forbid();
+
+            query = query.Where(t => t.AssignedTechnicianId == userId);
+        }
 
         query = query
             .OrderByDescending(t => t.Priority)
@@ -48,7 +62,51 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
             })
             .ToListAsync();
 
-        return View(new TicketListViewModel { Tickets = tickets, SelectedStatus = status });
+        return View(new TicketListViewModel { Tickets = tickets, SelectedStatus = status, AssignedToMe = assignedToMe });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> MyTickets(TicketStatus? status = null)
+    {
+        var userId = GetCurrentUserId();
+        if (string.IsNullOrEmpty(userId))
+            return Forbid();
+
+        var query = _context.Tickets
+            .AsNoTracking()
+            .Include(t => t.Author)
+            .Include(t => t.AssignedTechnician)
+            .Include(t => t.Comments)
+            .Where(t => t.AuthorId == userId);
+
+        if (status.HasValue)
+            query = query.Where(t => t.Status == status.Value);
+
+        var tickets = await query
+            .OrderByDescending(t => t.Priority)
+            .ThenByDescending(t => t.CreatedAtUtc)
+            .Select(t => new TicketItemViewModel
+            {
+                Id = t.Id,
+                Title = t.Title,
+                DescriptionPreview = t.Description.Length > 120 ? t.Description.Substring(0, 120) + "..." : t.Description,
+                Status = t.Status,
+                Priority = t.Priority,
+                AuthorName = t.Author.UserName ?? t.Author.Email ?? "-",
+                AssignedTechnicianId = t.AssignedTechnicianId,
+                AssignedTechnicianName = t.AssignedTechnician != null ? t.AssignedTechnician.UserName ?? t.AssignedTechnician.Email : null,
+                CreatedAtUtc = t.CreatedAtUtc,
+                UpdatedAtUtc = t.UpdatedAtUtc,
+                CommentCount = t.Comments.Count
+            })
+            .ToListAsync();
+
+        return View("MyTickets", new TicketListViewModel
+        {
+            Tickets = tickets,
+            SelectedStatus = status,
+            AssignedToMe = false
+        });
     }
 
     public IActionResult Create() => View(new TicketFormViewModel());

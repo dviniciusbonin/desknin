@@ -1,10 +1,13 @@
+using System.Threading;
 using DeskNin.Controllers;
 using DeskNin.Data;
+using DeskNin.Models;
 using DeskNin.Tests.TestHelpers;
 using DeskNin.ViewModels;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeskNin.Tests.Controllers;
 
@@ -21,10 +24,44 @@ public class SettingsControllerTest : IDisposable
 
     public void Dispose() => _context.Dispose();
 
+    private SettingsController CreateController() => new(_context, _userManager);
+
+    [Fact]
+    public async Task Index_Get_Returns_View_With_Model()
+    {
+        var controller = CreateController();
+        controller.SetAnonymousUser();
+
+        var result = await controller.Index(CancellationToken.None);
+
+        var view = Assert.IsType<ViewResult>(result);
+        var vm = Assert.IsType<SettingsIndexViewModel>(view.Model);
+        Assert.False(vm.CanManageSystemEmail);
+    }
+
+    [Fact]
+    public async Task SaveEmailNotifications_Post_As_Admin_Updates_Database()
+    {
+        var user = new IdentityUser { UserName = "adminsettings", Email = "adminsettings@example.com" };
+        await _userManager.CreateAsync(user, "Password123!");
+
+        var controller = CreateController();
+        controller.SetUser(user, "Admin");
+
+        var result = await controller.SaveEmailNotifications(true, CancellationToken.None);
+
+        var redirect = Assert.IsType<RedirectToActionResult>(result);
+        Assert.Equal(nameof(SettingsController.Index), redirect.ActionName);
+
+        var stored = await _context.Settings.AsNoTracking()
+            .SingleAsync(s => s.Key == SettingKeys.EmailNotificationsEnabled);
+        Assert.True(SettingValue.AsBool(stored.Value));
+    }
+
     [Fact]
     public void ChangePassword_Get_Returns_ViewResult()
     {
-        var controller = new SettingsController(_userManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var result = controller.ChangePassword();
@@ -35,7 +72,7 @@ public class SettingsControllerTest : IDisposable
     [Fact]
     public async Task ChangePassword_Post_With_Invalid_Model_Returns_View()
     {
-        var controller = new SettingsController(_userManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
         controller.ModelState.AddModelError("CurrentPassword", "Required");
 
@@ -58,7 +95,7 @@ public class SettingsControllerTest : IDisposable
         var user = new IdentityUser { UserName = "settingsuser", Email = "settings@example.com" };
         await _userManager.CreateAsync(user, "OldPassword123!");
 
-        var controller = new SettingsController(_userManager);
+        var controller = CreateController();
         controller.SetUser(user);
 
         var model = new ChangePasswordViewModel
@@ -84,7 +121,7 @@ public class SettingsControllerTest : IDisposable
         var user = new IdentityUser { UserName = "wronguser", Email = "wrong@example.com" };
         await _userManager.CreateAsync(user, "CorrectPassword123!");
 
-        var controller = new SettingsController(_userManager);
+        var controller = CreateController();
         controller.SetUser(user);
 
         var model = new ChangePasswordViewModel
@@ -106,7 +143,7 @@ public class SettingsControllerTest : IDisposable
     {
         var user = new IdentityUser { UserName = "ghost", Email = "ghost@example.com", Id = "ghost-id" };
 
-        var controller = new SettingsController(_userManager);
+        var controller = CreateController();
         controller.SetUser(user);
 
         var model = new ChangePasswordViewModel

@@ -11,6 +11,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Ticket> Tickets { get; set; }
     public DbSet<TicketComment> TicketComments { get; set; }
+    public DbSet<Setting> Settings { get; set; }
 
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -84,6 +85,19 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasIndex(c => new { c.TicketId, c.CreatedAtUtc });
+        });
+
+        modelBuilder.Entity<Setting>(entity =>
+        {
+            entity.HasKey(e => e.Key);
+            entity.Property(e => e.Key).HasMaxLength(128).IsRequired();
+            entity.Property(e => e.Value).HasMaxLength(4000).IsRequired();
+
+            entity.HasData(new Setting
+            {
+                Key = SettingKeys.EmailNotificationsEnabled,
+                Value = SettingValue.FromBool(false)
+            });
         });
     }
 

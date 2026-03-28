@@ -1,10 +1,12 @@
 using DeskNin.Controllers;
 using DeskNin.Data;
+using DeskNin.Services;
 using DeskNin.Tests.TestHelpers;
 using DeskNin.ViewModels;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 
 namespace DeskNin.Tests.Controllers;
 
@@ -14,18 +16,24 @@ public class TeamControllerTest : IDisposable
     private ApplicationDbContext _context = null!;
     private UserManager<IdentityUser> _userManager = null!;
     private RoleManager<IdentityRole> _roleManager = null!;
+    private readonly Mock<IPasswordGenerator> _passwordGenerator = new();
 
     public TeamControllerTest()
     {
         (_context, _userManager, _roleManager) = IdentityTestHelpers.CreateIdentityServices();
+        _passwordGenerator.Setup(p => p.GenerateIdentityCompliantPasswordAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync("GeneratedPass123!");
     }
 
     public void Dispose() => _context.Dispose();
 
+    private TeamController CreateController() =>
+        new(_context, _userManager, _roleManager, _passwordGenerator.Object);
+
     [Fact]
     public async Task Index_Returns_ViewResult_With_Users()
     {
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var result = await controller.Index();
@@ -38,7 +46,7 @@ public class TeamControllerTest : IDisposable
     [Fact]
     public async Task Index_Post_With_Valid_Form_Creates_User_And_Redirects()
     {
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var form = new UserForm
@@ -63,7 +71,7 @@ public class TeamControllerTest : IDisposable
     [Fact]
     public async Task Index_Post_With_Invalid_Password_Redirects_With_Error()
     {
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var form = new UserForm
@@ -89,7 +97,7 @@ public class TeamControllerTest : IDisposable
         await _userManager.CreateAsync(user, "Password123!");
         await _userManager.AddToRoleAsync(user, "User");
 
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var result = await controller.Edit(user.Id);
@@ -105,7 +113,7 @@ public class TeamControllerTest : IDisposable
     [Fact]
     public async Task Edit_Get_With_Invalid_Id_Returns_NotFound()
     {
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var result = await controller.Edit("non-existent-id");
@@ -120,7 +128,7 @@ public class TeamControllerTest : IDisposable
         await _userManager.CreateAsync(user, "Password123!");
         await _userManager.AddToRoleAsync(user, "User");
 
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var form = new UserForm
@@ -148,7 +156,7 @@ public class TeamControllerTest : IDisposable
     [Fact]
     public async Task Edit_Post_With_Invalid_Id_Returns_NotFound()
     {
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var form = new UserForm

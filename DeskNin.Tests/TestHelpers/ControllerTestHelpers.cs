@@ -38,7 +38,7 @@ public static class ControllerTestHelpers
         return httpContext;
     }
 
-    public static void SetUser(this Controller controller, IdentityUser user)
+    public static void SetUser(this Controller controller, IdentityUser user, params string[] roles)
     {
         var claims = new List<Claim>
         {
@@ -46,6 +46,9 @@ public static class ControllerTestHelpers
             new(ClaimTypes.Name, user.UserName ?? user.Email ?? ""),
             new(ClaimTypes.Email, user.Email ?? "")
         };
+        foreach (var role in roles)
+            claims.Add(new Claim(ClaimTypes.Role, role));
+
         var identity = new ClaimsIdentity(claims, "TestAuth");
         var principal = new ClaimsPrincipal(identity);
         controller.ControllerContext = new ControllerContext { HttpContext = CreateHttpContext(principal) };
