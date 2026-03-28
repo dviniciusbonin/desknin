@@ -358,3 +358,16 @@
 .desknin-dashboard-recent-id {
   font-weight: 600;
 }
+
+/* Settings: card grid */
+.desknin-settings-card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.desknin-settings-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-bs-theme="dark"] .desknin-settings-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.35) !important;
+}

@@ -23,7 +23,7 @@
     <div class="d-flex min-vh-100">
         <aside id="desknin-sidebar" class="desknin-sidebar d-flex flex-column bg-secondary border-end flex-shrink-0">
             <div class="p-3 border-bottom">
-                <a asp-controller="Dashboard" asp-action="Index" class="d-flex align-items-center gap-2 text-decoration-none text-body">
+                <a asp-controller="Home" asp-action="Index" class="d-flex align-items-center gap-2 text-decoration-none text-body">
                     <partial name="_Logo"/>
                 </a>
             </div>
@@ -61,7 +61,7 @@
                         </li>
                     }
                     <li class="nav-item">
-                        <a class="nav-link d-flex align-items-center gap-2 rounded py-2 px-3 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active bg-primary text-white" : "text-body-secondary")" asp-controller="Settings" asp-action="ChangePassword">
+                        <a class="nav-link d-flex align-items-center gap-2 rounded py-2 px-3 @(ViewContext.RouteData.Values["controller"]?.ToString() == "Settings" ? "active bg-primary text-white" : "text-body-secondary")" asp-controller="Settings" asp-action="Index">
                             <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                             <span>Settings</span>
                         </a>

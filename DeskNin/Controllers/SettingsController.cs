@@ -1,18 +1,57 @@
+using DeskNin.Data;
+using DeskNin.Models;
 using DeskNin.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeskNin.Controllers;
 
 [Authorize]
-public class SettingsController : Controller
+public class SettingsController(ApplicationDbContext context, UserManager<IdentityUser> userManager) : Controller
 {
-    private readonly UserManager<IdentityUser> _userManager;
+    private readonly ApplicationDbContext _context = context;
+    private readonly UserManager<IdentityUser> _userManager = userManager;
 
-    public SettingsController(UserManager<IdentityUser> userManager)
+    [HttpGet]
+    public async Task<IActionResult> Index(CancellationToken cancellationToken)
     {
-        _userManager = userManager;
+        var row = await _context.Settings
+            .AsNoTracking()
+            .FirstOrDefaultAsync(s => s.Key == SettingKeys.EmailNotificationsEnabled, cancellationToken);
+
+        return View(new SettingsIndexViewModel
+        {
+            EmailNotificationsEnabled = SettingValue.AsBool(row?.Value),
+            CanManageSystemEmail = User.IsInRole("Admin")
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
+    public async Task<IActionResult> SaveEmailNotifications(bool emailNotificationsEnabled, CancellationToken cancellationToken)
+    {
+        var row = await _context.Settings
+            .FirstOrDefaultAsync(s => s.Key == SettingKeys.EmailNotificationsEnabled, cancellationToken);
+
+        if (row == null)
+        {
+            _context.Settings.Add(new Setting
+            {
+                Key = SettingKeys.EmailNotificationsEnabled,
+                Value = SettingValue.FromBool(emailNotificationsEnabled)
+            });
+        }
+        else
+        {
+            row.Value = SettingValue.FromBool(emailNotificationsEnabled);
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+        TempData["SettingsSaved"] = true;
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpGet]
