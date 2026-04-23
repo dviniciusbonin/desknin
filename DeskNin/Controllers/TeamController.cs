@@ -161,11 +161,28 @@ public class TeamController : Controller
 
         var code = await _userManager.GeneratePasswordResetTokenAsync(user);
         var encodedCode = WebEncoders.Base64UrlEncode(System.Text.Encoding.UTF8.GetBytes(code));
-        var resetUrl = Url.Page(
-            "/Account/ResetPassword",
-            pageHandler: null,
-            values: new { area = "Identity", code = encodedCode, email = user.Email },
-            protocol: Request.Scheme);
+        string? resetUrl;
+        try
+        {
+            resetUrl = Url.Page(
+                "/Account/ResetPassword",
+                pageHandler: null,
+                values: new { area = "Identity", code = encodedCode, email = user.Email },
+                protocol: Request.Scheme);
+        }
+        catch
+        {
+            resetUrl = null;
+        }
+
+        if (string.IsNullOrWhiteSpace(resetUrl))
+        {
+            var scheme = string.IsNullOrWhiteSpace(Request.Scheme) ? "https" : Request.Scheme;
+            var host = Request.Host.HasValue ? Request.Host.Value : "localhost";
+            resetUrl =
+                $"{scheme}://{host}/Identity/Account/ResetPassword?code={Uri.EscapeDataString(encodedCode)}&email={Uri.EscapeDataString(user.Email)}";
+        }
+
         var htmlBody = _emailTemplateService.BuildOnboardingBody(user.Email, resetUrl ?? string.Empty);
 
         try

@@ -6,7 +6,7 @@ namespace DeskNin.Tests.Services;
 public class EmailTemplateServiceTest
 {
     private readonly EmailTemplateService _service = new(
-        Options.Create(new ResendOptions { LogoUrl = "https://example.com/logo.png" }));
+        Options.Create(new ResendOptions()));
 
     [Fact]
     public void BuildTicketUpdateBody_Includes_Branding_And_Assignee()
@@ -23,7 +23,7 @@ public class EmailTemplateServiceTest
         Assert.Contains("VPN access issue", html);
         Assert.Contains("Assigned to", html);
         Assert.Contains("bob", html);
-        Assert.Contains("https://example.com/logo.png", html);
+        Assert.Contains("Ticket management system", html);
     }
 
     [Fact]
