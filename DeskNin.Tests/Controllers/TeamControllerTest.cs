@@ -1,10 +1,13 @@
 using DeskNin.Controllers;
 using DeskNin.Data;
+using DeskNin.Services;
 using DeskNin.Tests.TestHelpers;
 using DeskNin.ViewModels;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace DeskNin.Tests.Controllers;
 
@@ -14,18 +17,39 @@ public class TeamControllerTest : IDisposable
     private ApplicationDbContext _context = null!;
     private UserManager<IdentityUser> _userManager = null!;
     private RoleManager<IdentityRole> _roleManager = null!;
+    private readonly Mock<IPasswordGenerator> _passwordGenerator = new();
+    private readonly Mock<IAppSettingsService> _appSettingsService = new();
+    private readonly Mock<IAppEmailSender> _appEmailSender = new();
+    private readonly Mock<IEmailTemplateService> _emailTemplateService = new();
 
     public TeamControllerTest()
     {
         (_context, _userManager, _roleManager) = IdentityTestHelpers.CreateIdentityServices();
+        _passwordGenerator.Setup(p => p.GenerateIdentityCompliantPasswordAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync("GeneratedPass123!");
+        _appSettingsService.Setup(s => s.IsEmailEnabledAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(false);
+        _emailTemplateService.Setup(t => t.BuildOnboardingBody(It.IsAny<string>(), It.IsAny<string>()))
+            .Returns("<p>onboarding</p>");
     }
 
     public void Dispose() => _context.Dispose();
 
+    private TeamController CreateController() =>
+        new(
+            _context,
+            _userManager,
+            _roleManager,
+            _passwordGenerator.Object,
+            _appSettingsService.Object,
+            _appEmailSender.Object,
+            _emailTemplateService.Object,
+            Mock.Of<ILogger<TeamController>>());
+
     [Fact]
     public async Task Index_Returns_ViewResult_With_Users()
     {
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var result = await controller.Index();
@@ -38,7 +62,7 @@ public class TeamControllerTest : IDisposable
     [Fact]
     public async Task Index_Post_With_Valid_Form_Creates_User_And_Redirects()
     {
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var form = new UserForm
@@ -58,12 +82,15 @@ public class TeamControllerTest : IDisposable
         var user = await _userManager.FindByEmailAsync("test@example.com");
         Assert.NotNull(user);
         Assert.Equal("testuser", user.UserName);
+
+        var roles = await _userManager.GetRolesAsync(user);
+        Assert.Contains("User", roles);
     }
 
     [Fact]
     public async Task Index_Post_With_Invalid_Password_Redirects_With_Error()
     {
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var form = new UserForm
@@ -83,13 +110,46 @@ public class TeamControllerTest : IDisposable
     }
 
     [Fact]
+    public async Task Index_Post_With_EmailEnabled_Sends_Onboarding_Email()
+    {
+        _appSettingsService.Setup(s => s.IsEmailEnabledAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        var controller = CreateController();
+        controller.SetAnonymousUser();
+
+        var form = new UserForm
+        {
+            Username = "emailuser",
+            Email = "emailuser@example.com",
+            Password = "Password123!",
+            ConfirmPassword = "Password123!",
+            Role = "User"
+        };
+
+        await controller.Index(form);
+
+        _emailTemplateService.Verify(t => t.BuildOnboardingBody(
+                "emailuser@example.com",
+                It.IsAny<string>()),
+            Times.Once);
+
+        _appEmailSender.Verify(s => s.SendEmailAsync(
+                "emailuser@example.com",
+                It.IsAny<string>(),
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()),
+            Times.Once);
+    }
+
+    [Fact]
     public async Task Edit_Get_With_Valid_Id_Returns_View_With_Form()
     {
         var user = new IdentityUser { UserName = "edituser", Email = "edit@example.com" };
         await _userManager.CreateAsync(user, "Password123!");
         await _userManager.AddToRoleAsync(user, "User");
 
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var result = await controller.Edit(user.Id);
@@ -105,7 +165,7 @@ public class TeamControllerTest : IDisposable
     [Fact]
     public async Task Edit_Get_With_Invalid_Id_Returns_NotFound()
     {
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var result = await controller.Edit("non-existent-id");
@@ -120,7 +180,7 @@ public class TeamControllerTest : IDisposable
         await _userManager.CreateAsync(user, "Password123!");
         await _userManager.AddToRoleAsync(user, "User");
 
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var form = new UserForm
@@ -148,7 +208,7 @@ public class TeamControllerTest : IDisposable
     [Fact]
     public async Task Edit_Post_With_Invalid_Id_Returns_NotFound()
     {
-        var controller = new TeamController(_context, _userManager, _roleManager);
+        var controller = CreateController();
         controller.SetAnonymousUser();
 
         var form = new UserForm

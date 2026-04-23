@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using DeskNin.Data;
 using DeskNin.Models;
+using DeskNin.Services;
 using DeskNin.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,13 +11,25 @@ using Microsoft.EntityFrameworkCore;
 namespace DeskNin.Controllers;
 
 [Authorize]
-public class TicketsController(ApplicationDbContext context, UserManager<IdentityUser> userManager) : Controller
+public class TicketsController(
+    ApplicationDbContext context,
+    UserManager<IdentityUser> userManager,
+    ITicketNotificationService ticketNotificationService,
+    ILogger<TicketsController> logger) : Controller
 {
     private readonly ApplicationDbContext _context = context;
     private readonly UserManager<IdentityUser> _userManager = userManager;
+    private readonly ITicketNotificationService _ticketNotificationService = ticketNotificationService;
+    private readonly ILogger<TicketsController> _logger = logger;
 
-    public async Task<IActionResult> Index(TicketStatus? status = null)
+    [Authorize(Roles = "Admin,Technical")]
+    public async Task<IActionResult> Index(TicketStatus? status = null, bool assignedToMe = false)
     {
+        if (!Request.Query.ContainsKey("status"))
+            status = TicketStatus.Open;
+
+        var userId = GetCurrentUserId();
+
         var query = _context.Tickets
             .AsNoTracking()
             .Include(t => t.Author)
@@ -26,6 +39,14 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
 
         if (status.HasValue)
             query = query.Where(t => t.Status == status.Value);
+
+        if (assignedToMe)
+        {
+            if (string.IsNullOrEmpty(userId))
+                return Forbid();
+
+            query = query.Where(t => t.AssignedTechnicianId == userId);
+        }
 
         query = query
             .OrderByDescending(t => t.Priority)
@@ -48,7 +69,51 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
             })
             .ToListAsync();
 
-        return View(new TicketListViewModel { Tickets = tickets, SelectedStatus = status });
+        return View(new TicketListViewModel { Tickets = tickets, SelectedStatus = status, AssignedToMe = assignedToMe });
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> MyTickets(TicketStatus? status = null)
+    {
+        var userId = GetCurrentUserId();
+        if (string.IsNullOrEmpty(userId))
+            return Forbid();
+
+        var query = _context.Tickets
+            .AsNoTracking()
+            .Include(t => t.Author)
+            .Include(t => t.AssignedTechnician)
+            .Include(t => t.Comments)
+            .Where(t => t.AuthorId == userId);
+
+        if (status.HasValue)
+            query = query.Where(t => t.Status == status.Value);
+
+        var tickets = await query
+            .OrderByDescending(t => t.Priority)
+            .ThenByDescending(t => t.CreatedAtUtc)
+            .Select(t => new TicketItemViewModel
+            {
+                Id = t.Id,
+                Title = t.Title,
+                DescriptionPreview = t.Description.Length > 120 ? t.Description.Substring(0, 120) + "..." : t.Description,
+                Status = t.Status,
+                Priority = t.Priority,
+                AuthorName = t.Author.UserName ?? t.Author.Email ?? "-",
+                AssignedTechnicianId = t.AssignedTechnicianId,
+                AssignedTechnicianName = t.AssignedTechnician != null ? t.AssignedTechnician.UserName ?? t.AssignedTechnician.Email : null,
+                CreatedAtUtc = t.CreatedAtUtc,
+                UpdatedAtUtc = t.UpdatedAtUtc,
+                CommentCount = t.Comments.Count
+            })
+            .ToListAsync();
+
+        return View("MyTickets", new TicketListViewModel
+        {
+            Tickets = tickets,
+            SelectedStatus = status,
+            AssignedToMe = false
+        });
     }
 
     public IActionResult Create() => View(new TicketFormViewModel());
@@ -171,6 +236,7 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
         ticket.UpdatedAtUtc = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+        await NotifyUpdateAsync(ticket, "details updated", "Title/description or priority was edited.");
         return RedirectToAction(nameof(Details), new { id = ticket.Id });
     }
 
@@ -186,20 +252,27 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
         if (!ticket.CanManageWorkflow)
             return RedirectToAction(nameof(Details), new { id });
 
+        string assignmentSummary;
         if (!string.IsNullOrWhiteSpace(assignedTechnicianId))
         {
-            var exists = await _context.Users.AnyAsync(u => u.Id == assignedTechnicianId);
-            if (!exists)
+            var assignee = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == assignedTechnicianId);
+            if (assignee == null)
                 return NotFound();
             ticket.AssignedTechnicianId = assignedTechnicianId;
+            var assigneeName = assignee.UserName ?? assignee.Email ?? assignee.Id;
+            assignmentSummary = $"Assigned technician: {assigneeName}.";
         }
         else
         {
             ticket.AssignedTechnicianId = null;
+            assignmentSummary = "Ticket is now unassigned.";
         }
 
         ticket.UpdatedAtUtc = DateTime.UtcNow;
         await _context.SaveChangesAsync();
+        await NotifyUpdateAsync(ticket, "assignment updated", assignmentSummary);
         return RedirectToAction(nameof(Details), new { id });
     }
 
@@ -217,6 +290,7 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
 
         ticket.ChangeStatus(status, DateTime.UtcNow);
         await _context.SaveChangesAsync();
+        await NotifyUpdateAsync(ticket, "status updated", $"Status changed to {status}.");
 
         return RedirectToAction(nameof(Details), new { id });
     }
@@ -236,6 +310,7 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
         ticket.Priority = priority;
         ticket.UpdatedAtUtc = DateTime.UtcNow;
         await _context.SaveChangesAsync();
+        await NotifyUpdateAsync(ticket, "priority updated", $"Priority changed to {priority}.");
 
         return RedirectToAction(nameof(Details), new { id });
     }
@@ -265,6 +340,7 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
         ticket.UpdatedAtUtc = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+        await NotifyUpdateAsync(ticket, "new comment", "A new comment was added to this ticket.");
         return RedirectToAction(nameof(Details), new { id = form.TicketId });
     }
 
@@ -296,5 +372,21 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
                 Name = u.UserName ?? u.Email ?? u.Id
             })
             .ToList();
+    }
+
+    private async Task NotifyUpdateAsync(Ticket ticket, string eventLabel, string changeSummary)
+    {
+        var actorId = GetCurrentUserId();
+        if (string.IsNullOrWhiteSpace(actorId))
+            return;
+
+        try
+        {
+            await _ticketNotificationService.NotifyTicketUpdatedAsync(ticket, actorId, eventLabel, changeSummary);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to notify ticket update for ticket {TicketId}", ticket.Id);
+        }
     }
 }

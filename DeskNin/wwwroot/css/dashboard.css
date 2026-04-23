@@ -106,6 +106,33 @@
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
+.desknin-ticket-card .text-body-secondary {
+  /* Keep consistency with our ticket typography colors */
+  color: #4b5563 !important;
+}
+
+[data-bs-theme="dark"] .desknin-ticket-card {
+  border-color: #334155;
+  background-color: #0f172a;
+}
+
+[data-bs-theme="dark"] .desknin-ticket-card:hover {
+  box-shadow: 0 10px 24px rgba(2, 6, 23, 0.45) !important;
+}
+
+[data-bs-theme="dark"] .desknin-ticket-number,
+[data-bs-theme="dark"] .desknin-ticket-title,
+[data-bs-theme="dark"] .desknin-ticket-author,
+[data-bs-theme="dark"] .desknin-ticket-time {
+  color: #e2e8f0;
+}
+
+[data-bs-theme="dark"] .desknin-ticket-card .text-body-secondary,
+[data-bs-theme="dark"] .desknin-ticket-description,
+[data-bs-theme="dark"] .desknin-ticket-working {
+  color: #94a3b8 !important;
+}
+
 .desknin-ticket-card:hover {
   transform: translateY(-1px);
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08) !important;
@@ -152,23 +179,31 @@
 }
 
 .desknin-ticket-status-open {
-  background-color: rgba(var(--bs-primary-rgb), 0.14);
-  color: var(--bs-primary);
+  /* Figma: primary blue */
+  background-color: rgba(37, 99, 235, 0.14);
+  color: #2563EB;
 }
 
 .desknin-ticket-status-progress {
-  background-color: #fef3c7;
-  color: #b45309;
+  /* Figma: warning yellow */
+  background-color: rgba(245, 158, 11, 0.18);
+  color: #F59E0B;
 }
 
 .desknin-ticket-status-resolved {
-  background-color: #d1fae5;
-  color: #047857;
+  /* Figma: success green */
+  background-color: rgba(16, 185, 129, 0.18);
+  color: #10B981;
 }
 
 .desknin-ticket-status-closed {
   background-color: #e5e7eb;
   color: #475569;
+}
+
+[data-bs-theme="dark"] .desknin-ticket-status-closed {
+  background-color: rgba(226, 232, 240, 0.14);
+  color: #e2e8f0;
 }
 
 .desknin-ticket-priority {
@@ -239,4 +274,100 @@
 
 [data-bs-theme="dark"] .desknin-filter-select {
   background: rgba(17, 24, 39, 0.85);
+}
+
+/* Dashboard overview (metric cards + priority chart + recent activity) */
+.desknin-dashboard-card {
+  background: var(--bs-card-bg, #fff);
+}
+
+.desknin-dashboard-priority-track {
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.08);
+  overflow: hidden;
+}
+
+.desknin-dashboard-priority-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.desknin-dashboard-activity-list .desknin-dashboard-activity-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  margin-top: 6px;
+  flex: 0 0 auto;
+}
+
+[data-bs-theme="dark"] .desknin-dashboard-priority-track {
+  background: rgba(226, 232, 240, 0.14);
+}
+
+.desknin-dashboard-metric-dot {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+}
+
+.desknin-dashboard-metric-count {
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.desknin-dashboard-metric-icon svg {
+  display: block;
+}
+
+/* Dashboard: Recent tickets list (frame) */
+.desknin-dashboard-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.desknin-dashboard-recent-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background: rgba(var(--bs-primary-rgb), 0.06);
+  border-radius: 0.75rem;
+}
+
+/* Mobile responsiveness: allow row to wrap instead of squeezing badge/text */
+@media (max-width: 575.98px) {
+  .desknin-dashboard-metric-count {
+    font-size: 1.75rem;
+  }
+
+  .desknin-dashboard-recent-row {
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    padding: 0.75rem 0.85rem;
+  }
+}
+
+[data-bs-theme="dark"] .desknin-dashboard-recent-row {
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.desknin-dashboard-recent-id {
+  font-weight: 600;
+}
+
+/* Settings: card grid */
+.desknin-settings-card {
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.desknin-settings-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(15, 23, 42, 0.08) !important;
+}
+
+[data-bs-theme="dark"] .desknin-settings-card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.35) !important;
 }

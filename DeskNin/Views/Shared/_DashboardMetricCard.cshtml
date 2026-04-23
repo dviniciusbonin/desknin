@@ -1,0 +1,39 @@
+@model DeskNin.ViewModels.DashboardMetricCardViewModel
+
+<div class="card h-100 border-0 shadow-sm rounded-4 desknin-dashboard-metric-card">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-start justify-content-between gap-3 mb-3">
+            <div class="d-flex flex-column">
+                <span class="d-flex align-items-center gap-2 small fw-medium text-body-secondary">
+                    <span class="rounded-circle @Model.AccentCssClass desknin-dashboard-metric-dot" aria-hidden="true"></span>
+                    @Model.Label
+                </span>
+            </div>
+
+            @{
+                var iconColorClass = Model.IconKind switch
+                {
+                    "open" => "text-primary",
+                    "in_progress" => "text-warning",
+                    "resolved" => "text-success",
+                    _ => "text-body-secondary"
+                };
+            }
+            <div class="desknin-dashboard-metric-icon @iconColorClass" aria-hidden="true">
+                @{
+                    var iconSvg = Model.IconKind switch
+                    {
+                        "open" => "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"14\" y=\"3\" width=\"7\" height=\"7\" rx=\"1\"/><rect x=\"3\" y=\"14\" width=\"7\" height=\"7\" rx=\"1\"/><path d=\"M14 14h7v7h-7z\"/></svg>",
+                        "in_progress" => "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 7v5l3 2\"/><path d=\"M4 20c3-2 13-2 16 0\"/></svg>",
+                        "resolved" => "<svg width=\"22\" height=\"22\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9 12l2 2 4-5\"/></svg>",
+                        _ => ""
+                    };
+                }
+                @Html.Raw(iconSvg)
+            </div>
+        </div>
+
+        <p class="desknin-dashboard-metric-count mb-0 fw-bold">@Model.Count</p>
+    </div>
+</div>
+

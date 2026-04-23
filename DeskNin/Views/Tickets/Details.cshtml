@@ -7,6 +7,10 @@
 
 <div class="d-flex flex-column gap-4">
     <header class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        @{
+            var isBasicUser = User.IsInRole("User") && !User.IsInRole("Admin") && !User.IsInRole("Technical");
+            var backAction = isBasicUser ? "MyTickets" : "Index";
+        }
         <div>
             <h1 class="h3 fw-bold mb-1">@Model.Ticket.Title</h1>
             <p class="text-body-secondary small mb-0">Ticket #@Model.Ticket.Id</p>
@@ -16,7 +20,7 @@
             {
                 <a asp-action="Edit" asp-route-id="@Model.Ticket.Id" class="btn btn-outline-secondary rounded-2">Edit</a>
             }
-            <a asp-action="Index" class="btn btn-outline-secondary rounded-2">Back to list</a>
+            <a asp-action="@backAction" class="btn btn-outline-secondary rounded-2">Back to list</a>
         </div>
     </header>
 
@@ -104,28 +108,63 @@
                         </h2>
                     </div>
                     <div class="card-body p-4 d-flex flex-column gap-3">
-                        <form asp-action="Assign" method="post" class="desknin-workflow-block d-flex flex-column gap-2">
-                            <input type="hidden" name="id" value="@Model.Ticket.Id"/>
-                            <label class="form-label small mb-0 d-flex align-items-center gap-2">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                                Assign technician
-                            </label>
-                            <select name="assignedTechnicianId" class="form-select rounded-2">
-                                <option value="">Unassigned</option>
-                                @foreach (var technician in Model.Technicians)
-                                {
-                                    if (technician.UserId == Model.Ticket.AssignedTechnicianId)
-                                    {
-                                        <option value="@technician.UserId" selected>@technician.Name</option>
-                                    }
-                                    else
-                                    {
-                                        <option value="@technician.UserId">@technician.Name</option>
-                                    }
+                        @{
+                            var isAdmin = User.IsInRole("Admin");
+                            var isTechnical = User.IsInRole("Technical");
+                            var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                            var isAssignedToMe = !string.IsNullOrEmpty(currentUserId) && Model.Ticket.AssignedTechnicianId == currentUserId;
+                        }
+
+                        @if (isTechnical && !isAdmin)
+                        {
+                            <form asp-action="Assign" method="post" class="desknin-workflow-block d-flex flex-column gap-2">
+                                <input type="hidden" name="id" value="@Model.Ticket.Id"/>
+                                @{
+                                    var canToggleAssignment = Model.Ticket.Status != TicketStatus.Closed;
+                                    var targetAssignedTechnicianId = isAssignedToMe ? "" : currentUserId;
+                                    var buttonText = isAssignedToMe ? "Unassign me" : "Assign me";
                                 }
-                            </select>
-                            <button type="submit" class="btn btn-primary btn-sm rounded-2">Save assignment</button>
-                        </form>
+                                <input type="hidden" name="assignedTechnicianId" value="@targetAssignedTechnicianId"/>
+                                <div class="d-flex align-items-center justify-content-between gap-2">
+                                    <label class="form-label small mb-0 d-flex align-items-center gap-2">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                        Assignment
+                                    </label>
+                                    @if (isAssignedToMe)
+                                    {
+                                        <span class="small text-body-secondary">Assigned to you</span>
+                                    }
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm rounded-2" @(!canToggleAssignment ? "disabled" : "")>
+                                    @buttonText
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="Assign" method="post" class="desknin-workflow-block d-flex flex-column gap-2">
+                                <input type="hidden" name="id" value="@Model.Ticket.Id"/>
+                                <label class="form-label small mb-0 d-flex align-items-center gap-2">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                    Assign technician
+                                </label>
+                                <select name="assignedTechnicianId" class="form-select rounded-2">
+                                    <option value="">Unassigned</option>
+                                    @foreach (var technician in Model.Technicians)
+                                    {
+                                        if (technician.UserId == Model.Ticket.AssignedTechnicianId)
+                                        {
+                                            <option value="@technician.UserId" selected>@technician.Name</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@technician.UserId">@technician.Name</option>
+                                        }
+                                    }
+                                </select>
+                                <button type="submit" class="btn btn-primary btn-sm rounded-2">Save assignment</button>
+                            </form>
+                        }
 
                         <form asp-action="UpdateStatus" method="post" class="desknin-workflow-block d-flex flex-column gap-2">
                             <input type="hidden" name="id" value="@Model.Ticket.Id"/>

@@ -1,0 +1,42 @@
+@model IReadOnlyList<DeskNin.ViewModels.DashboardPriorityBucketViewModel>
+
+@{
+    var maxCount = Model.Count == 0 ? 0 : Model.Max(b => b.Count);
+    if (maxCount <= 0) maxCount = 1;
+}
+
+<section class="card border-0 shadow-sm rounded-3 h-100 desknin-dashboard-card">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <h2 class="h6 fw-bold mb-0">Tickets by Priority</h2>
+        </div>
+
+        <div class="desknin-dashboard-priority-stack">
+            @foreach (var bucket in Model)
+            {
+                var width = (int)Math.Round((bucket.Count / (double)maxCount) * 100);
+                if (width < 0) width = 0;
+                if (width > 100) width = 100;
+
+                var accent = bucket.Label switch
+                {
+                    "Low" => "bg-primary",
+                    "Medium" => "bg-warning",
+                    "High" => "bg-danger",
+                    _ => "bg-secondary"
+                };
+
+                <div class="mb-3">
+                    <div class="d-flex align-items-baseline justify-content-between mb-2">
+                        <span class="small text-body-secondary">@bucket.Label</span>
+                        <span class="fw-semibold">@bucket.Count</span>
+                    </div>
+                    <div class="desknin-dashboard-priority-track">
+                        <div class="desknin-dashboard-priority-fill @accent" style="width:@width%"></div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+

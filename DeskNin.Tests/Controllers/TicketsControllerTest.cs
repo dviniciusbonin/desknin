@@ -1,12 +1,15 @@
 using DeskNin.Controllers;
 using DeskNin.Data;
 using DeskNin.Models;
+using DeskNin.Services;
 using DeskNin.Tests.TestHelpers;
 using DeskNin.ViewModels;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Moq;
 
 namespace DeskNin.Tests.Controllers;
 
@@ -15,6 +18,7 @@ public class TicketsControllerTest : IDisposable
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly Mock<ITicketNotificationService> _ticketNotificationService = new();
 
     public TicketsControllerTest()
     {
@@ -26,7 +30,7 @@ public class TicketsControllerTest : IDisposable
     [Fact]
     public async Task Index_Returns_ViewResult_With_TicketListViewModel()
     {
-        var controller = new TicketsController(_context, _userManager);
+        var controller = new TicketsController(_context, _userManager, _ticketNotificationService.Object, Mock.Of<ILogger<TicketsController>>());
         controller.SetAnonymousUser();
 
         var result = await controller.Index();
@@ -41,7 +45,7 @@ public class TicketsControllerTest : IDisposable
         var user = new IdentityUser { UserName = "author", Email = "author@test.com" };
         await _userManager.CreateAsync(user, "Password123!");
 
-        var controller = new TicketsController(_context, _userManager);
+        var controller = new TicketsController(_context, _userManager, _ticketNotificationService.Object, Mock.Of<ILogger<TicketsController>>());
         controller.SetUser(user);
 
         var form = new TicketFormViewModel
@@ -68,7 +72,7 @@ public class TicketsControllerTest : IDisposable
     [Fact]
     public async Task Edit_Get_With_Invalid_Id_Returns_NotFound()
     {
-        var controller = new TicketsController(_context, _userManager);
+        var controller = new TicketsController(_context, _userManager, _ticketNotificationService.Object, Mock.Of<ILogger<TicketsController>>());
         controller.SetAnonymousUser();
 
         var result = await controller.Edit(9999);
@@ -92,7 +96,7 @@ public class TicketsControllerTest : IDisposable
         _context.Tickets.Add(ticket);
         await _context.SaveChangesAsync();
 
-        var controller = new TicketsController(_context, _userManager);
+        var controller = new TicketsController(_context, _userManager, _ticketNotificationService.Object, Mock.Of<ILogger<TicketsController>>());
         controller.SetUser(user);
 
         var result = await controller.UpdateStatus(ticket.Id, TicketStatus.Resolved);
@@ -103,6 +107,12 @@ public class TicketsControllerTest : IDisposable
         var updated = await _context.Tickets.FindAsync(ticket.Id);
         Assert.NotNull(updated);
         Assert.Equal(TicketStatus.Resolved, updated!.Status);
+        _ticketNotificationService.Verify(n => n.NotifyTicketUpdatedAsync(
+            It.IsAny<Ticket>(),
+            user.Id,
+            "status updated",
+            It.IsAny<string>(),
+            It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Fact]
@@ -124,7 +134,7 @@ public class TicketsControllerTest : IDisposable
         _context.Tickets.Add(ticket);
         await _context.SaveChangesAsync();
 
-        var controller = new TicketsController(_context, _userManager);
+        var controller = new TicketsController(_context, _userManager, _ticketNotificationService.Object, Mock.Of<ILogger<TicketsController>>());
         controller.SetUser(commenter);
 
         var form = new CommentFormViewModel
@@ -142,5 +152,11 @@ public class TicketsControllerTest : IDisposable
         Assert.NotNull(comment);
         Assert.Equal(commenter.Id, comment!.AuthorId);
         Assert.Equal(form.Content, comment.Content);
+        _ticketNotificationService.Verify(n => n.NotifyTicketUpdatedAsync(
+            It.IsAny<Ticket>(),
+            commenter.Id,
+            "new comment",
+            It.IsAny<string>(),
+            It.IsAny<CancellationToken>()), Times.Once);
     }
 }

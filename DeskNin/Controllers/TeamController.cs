@@ -1,9 +1,11 @@
 using DeskNin.Data;
+using DeskNin.Services;
 using DeskNin.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace DeskNin.Controllers;
 
@@ -13,12 +15,37 @@ public class TeamController : Controller
     private readonly ApplicationDbContext _context;
     private readonly UserManager<IdentityUser> _userManager;
     private readonly RoleManager<IdentityRole> _roleManager;
+    private readonly IPasswordGenerator _passwordGenerator;
+    private readonly IAppSettingsService _appSettingsService;
+    private readonly IAppEmailSender _appEmailSender;
+    private readonly IEmailTemplateService _emailTemplateService;
+    private readonly ILogger<TeamController> _logger;
 
-    public TeamController(ApplicationDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+    public TeamController(
+        ApplicationDbContext context,
+        UserManager<IdentityUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        IPasswordGenerator passwordGenerator,
+        IAppSettingsService appSettingsService,
+        IAppEmailSender appEmailSender,
+        IEmailTemplateService emailTemplateService,
+        ILogger<TeamController> logger)
     {
         _context = context;
         _userManager = userManager;
         _roleManager = roleManager;
+        _passwordGenerator = passwordGenerator;
+        _appSettingsService = appSettingsService;
+        _appEmailSender = appEmailSender;
+        _emailTemplateService = emailTemplateService;
+        _logger = logger;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GeneratePassword()
+    {
+        var password = await _passwordGenerator.GenerateIdentityCompliantPasswordAsync();
+        return Json(new { password });
     }
 
     public async Task<IActionResult> Index()
@@ -52,7 +79,8 @@ public class TeamController : Controller
         var user = new IdentityUser
         {
             UserName = form.Username,
-            Email = form.Email
+            Email = form.Email,
+            EmailConfirmed = true
         };
         var result = await _userManager.CreateAsync(user, form.Password!);
         if (!result.Succeeded)
@@ -61,7 +89,19 @@ public class TeamController : Controller
             TempData["AddMemberError"] = msg;
             return RedirectToAction("Index");
         }
-        await _userManager.AddToRoleAsync(user, form.Role);
+        var roleResult = await _userManager.AddToRoleAsync(user, form.Role);
+        if (!roleResult.Succeeded)
+        {
+            var roleMsg = string.Join(" ", roleResult.Errors.Select(e => e.Description));
+            TempData["AddMemberError"] = string.IsNullOrWhiteSpace(roleMsg)
+                ? "Could not assign role to the new user."
+                : roleMsg;
+            return RedirectToAction("Index");
+        }
+
+        if (await _appSettingsService.IsEmailEnabledAsync())
+            await TrySendOnboardingEmailAsync(user);
+
         return RedirectToAction("Index");
     }
 
@@ -112,5 +152,49 @@ public class TeamController : Controller
         await _userManager.AddToRoleAsync(user, form.Role);
 
         return RedirectToAction("Index");
+    }
+
+    private async Task TrySendOnboardingEmailAsync(IdentityUser user)
+    {
+        if (string.IsNullOrWhiteSpace(user.Email))
+            return;
+
+        var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var encodedCode = WebEncoders.Base64UrlEncode(System.Text.Encoding.UTF8.GetBytes(code));
+        string? resetUrl;
+        try
+        {
+            resetUrl = Url.Page(
+                "/Account/ResetPassword",
+                pageHandler: null,
+                values: new { area = "Identity", code = encodedCode, email = user.Email },
+                protocol: Request.Scheme);
+        }
+        catch
+        {
+            resetUrl = null;
+        }
+
+        if (string.IsNullOrWhiteSpace(resetUrl))
+        {
+            var scheme = string.IsNullOrWhiteSpace(Request.Scheme) ? "https" : Request.Scheme;
+            var host = Request.Host.HasValue ? Request.Host.Value : "localhost";
+            resetUrl =
+                $"{scheme}://{host}/Identity/Account/ResetPassword?code={Uri.EscapeDataString(encodedCode)}&email={Uri.EscapeDataString(user.Email)}";
+        }
+
+        var htmlBody = _emailTemplateService.BuildOnboardingBody(user.Email, resetUrl ?? string.Empty);
+
+        try
+        {
+            await _appEmailSender.SendEmailAsync(
+                user.Email,
+                "Set your DeskNin password",
+                htmlBody);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to send onboarding email for user {UserId}", user.Id);
+        }
     }
 }

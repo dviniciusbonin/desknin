@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Moq;
 using DeskNin.Data;
 
 namespace DeskNin.Tests.TestHelpers;
@@ -23,47 +21,31 @@ public static class IdentityTestHelpers
 
     public static UserManager<IdentityUser> CreateUserManager(ApplicationDbContext context)
     {
-        var userStore = new Microsoft.AspNetCore.Identity.EntityFrameworkCore.UserStore<IdentityUser>(context);
-        var options = new Mock<IOptions<IdentityOptions>>();
-        options.Setup(o => o.Value).Returns(new IdentityOptions { Lockout = { AllowedForNewUsers = false } });
-
-        var userValidators = new List<IUserValidator<IdentityUser>> { new UserValidator<IdentityUser>() };
-        var pwdValidators = new List<IPasswordValidator<IdentityUser>> { new PasswordValidator<IdentityUser>() };
-
-        var userManager = new UserManager<IdentityUser>(
-            userStore,
-            options.Object,
-            new PasswordHasher<IdentityUser>(),
-            userValidators,
-            pwdValidators,
-            new UpperInvariantLookupNormalizer(),
-            new IdentityErrorDescriber(),
-            new ServiceCollection().BuildServiceProvider(),
-            Mock.Of<ILogger<UserManager<IdentityUser>>>());
-
-        return userManager;
+        return CreateIdentityServices().UserManager;
     }
 
     public static RoleManager<IdentityRole> CreateRoleManager(ApplicationDbContext context)
     {
-        var roleStore = new Microsoft.AspNetCore.Identity.EntityFrameworkCore.RoleStore<IdentityRole>(context);
-        var roleValidators = new List<IRoleValidator<IdentityRole>> { new RoleValidator<IdentityRole>() };
-
-        var roleManager = new RoleManager<IdentityRole>(
-            roleStore,
-            roleValidators,
-            new UpperInvariantLookupNormalizer(),
-            new IdentityErrorDescriber(),
-            Mock.Of<ILogger<RoleManager<IdentityRole>>>());
-
-        return roleManager;
+        return CreateIdentityServices().RoleManager;
     }
 
     public static (ApplicationDbContext Context, UserManager<IdentityUser> UserManager, RoleManager<IdentityRole> RoleManager) CreateIdentityServices()
     {
-        var context = CreateInMemoryContext();
-        var userManager = CreateUserManager(context);
-        var roleManager = CreateRoleManager(context);
+        var databaseName = Guid.NewGuid().ToString();
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddDataProtection();
+        services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase(databaseName));
+        services.AddIdentityCore<IdentityUser>(options => { options.Lockout.AllowedForNewUsers = false; })
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+        var provider = services.BuildServiceProvider();
+        var context = provider.GetRequiredService<ApplicationDbContext>();
+        context.Database.EnsureCreated();
+        var userManager = provider.GetRequiredService<UserManager<IdentityUser>>();
+        var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
         return (context, userManager, roleManager);
     }
 }

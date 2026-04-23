@@ -7,73 +7,53 @@
 <div>
     <header class="mb-4">
         <h1 class="h3 fw-bold mb-1">Dashboard</h1>
-        <p class="text-body-secondary small mb-0">Tickets overview</p>
+        <p class="text-body-secondary small mb-0">Ticket overview</p>
     </header>
+
+    @{
+        var openCard = new DeskNin.ViewModels.DashboardMetricCardViewModel
+        {
+            Label = "Open",
+            Count = Model.OpenCount,
+            AccentCssClass = "bg-primary",
+            IconKind = "open"
+        };
+
+        var inProgressCard = new DeskNin.ViewModels.DashboardMetricCardViewModel
+        {
+            Label = "In progress",
+            Count = Model.InProgressCount,
+            AccentCssClass = "bg-warning",
+            IconKind = "in_progress"
+        };
+
+        var resolvedCard = new DeskNin.ViewModels.DashboardMetricCardViewModel
+        {
+            Label = "Resolved",
+            Count = Model.ResolvedCount,
+            AccentCssClass = "bg-success",
+            IconKind = "resolved"
+        };
+    }
 
     <div class="row g-3 mb-4">
         <div class="col-12 col-md-4">
-            <div class="card h-100 border-0 shadow-sm rounded-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <span class="d-flex align-items-center gap-2 small fw-medium">
-                            <span class="rounded-circle bg-primary" style="width: 8px; height: 8px;"></span>
-                            Open
-                        </span>
-                    </div>
-                    <p class="h4 fw-bold mb-0">@Model.OpenCount</p>
-                </div>
-            </div>
+            <partial name="_DashboardMetricCard" model="openCard" />
         </div>
         <div class="col-12 col-md-4">
-            <div class="card h-100 border-0 shadow-sm rounded-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <span class="d-flex align-items-center gap-2 small fw-medium">
-                            <span class="rounded-circle bg-warning" style="width: 8px; height: 8px;"></span>
-                            In progress
-                        </span>
-                    </div>
-                    <p class="h4 fw-bold mb-0">@Model.InProgressCount</p>
-                </div>
-            </div>
+            <partial name="_DashboardMetricCard" model="inProgressCard" />
         </div>
         <div class="col-12 col-md-4">
-            <div class="card h-100 border-0 shadow-sm rounded-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between mb-2">
-                        <span class="d-flex align-items-center gap-2 small fw-medium">
-                            <span class="rounded-circle bg-success" style="width: 8px; height: 8px;"></span>
-                            Resolved
-                        </span>
-                    </div>
-                    <p class="h4 fw-bold mb-0">@Model.ResolvedCount</p>
-                </div>
-            </div>
+            <partial name="_DashboardMetricCard" model="resolvedCard" />
         </div>
     </div>
 
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <h2 class="h5 fw-bold mb-0">Recent tickets</h2>
-        <a asp-controller="Tickets" asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-2">View all</a>
+    <div class="row g-3 align-items-stretch">
+        <div class="col-12 col-lg-6">
+            <partial name="_DashboardPriorityChart" model="Model.PriorityBreakdown" />
+        </div>
+         <div class="col-12 col-lg-6">
+            <partial name="_DashboardRecentActivity" model="Model.RecentTickets" />
+        </div>
     </div>
-
-    @if (Model.RecentTickets.Count == 0)
-    {
-        <div class="card border-0 shadow-sm rounded-3">
-            <div class="card-body p-4 text-center text-body-secondary">
-                No tickets created yet.
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="row g-3">
-            @foreach (var ticket in Model.RecentTickets)
-            {
-                <div class="col-12 col-xl-6">
-                    <partial name="_TicketCard" model="ticket"/>
-                </div>
-            }
-        </div>
-    }
 </div>

@@ -2,20 +2,20 @@
 @using DeskNin.Models
 
 @{
-    ViewData["Title"] = "Tickets";
+    ViewData["Title"] = "My tickets";
 }
 
 <div>
     <header class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
         <div>
-            <h1 class="h3 fw-bold mb-1">Tickets</h1>
-            <p class="text-body-secondary small mb-0">Track and manage support requests.</p>
+            <h1 class="h3 fw-bold mb-1">My tickets</h1>
+            <p class="text-body-secondary small mb-0">Track the tickets you created.</p>
         </div>
         <a asp-action="Create" class="btn btn-primary rounded-2">Create ticket</a>
     </header>
 
     @{
-        var hasFilter = Model.SelectedStatus.HasValue || Model.AssignedToMe;
+        var hasFilter = Model.SelectedStatus.HasValue;
         var resetDisabledClass = hasFilter ? "" : " disabled";
     }
 
@@ -35,7 +35,7 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-5">
                     <div class="form-floating">
                         <select id="status" name="status" class="form-select rounded-2 desknin-filter-select">
                             <option value="">All</option>
@@ -55,21 +55,8 @@
                     </div>
                 </div>
 
-                <div class="col-12 col-md-3">
-                    <div class="d-flex justify-content-between align-items-center border rounded-2 px-3 py-2">
-                        <div class="min-w-0">
-                            <div class="fw-semibold small">Assignment</div>
-                            <div class="small text-body-secondary">Only tickets assigned to you</div>
-                        </div>
-                        <div class="form-check form-switch m-0 flex-shrink-0">
-                            <input class="form-check-input" type="checkbox" role="switch" value="true" id="assignedToMe" name="assignedToMe" @(Model.AssignedToMe ? "checked" : "")>
-                            <label class="form-check-label visually-hidden" for="assignedToMe">Assigned to me</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-md-2 d-flex justify-content-md-end gap-2">
-                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-2@resetDisabledClass">Reset</a>
+                <div class="col-12 col-md-4 d-flex justify-content-md-end gap-2">
+                    <a asp-action="MyTickets" asp-controller="Tickets" class="btn btn-outline-secondary btn-sm rounded-2@resetDisabledClass">Reset</a>
                     <button type="submit" class="btn btn-primary btn-sm rounded-2">Apply</button>
                 </div>
             </div>
@@ -96,3 +83,4 @@
         </div>
     }
 </div>
+

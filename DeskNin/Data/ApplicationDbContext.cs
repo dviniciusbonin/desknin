@@ -11,6 +11,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 {
     public DbSet<Ticket> Tickets { get; set; }
     public DbSet<TicketComment> TicketComments { get; set; }
+    public DbSet<Setting> Settings { get; set; }
 
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,18 +29,21 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             new IdentityRole
             {
                 Id = "ROLE_ADMIN",
+                ConcurrencyStamp = "ed8b48f3-261a-465c-a340-0fbbd3c5c8e4",
                 Name = "Admin",
                 NormalizedName = "ADMIN"
             },
             new IdentityRole
             {
                 Id = "ROLE_TECHNICAL",
+                ConcurrencyStamp = "f30c6299-89f3-49a3-92ed-d9105a69be0a",
                 Name = "Technical",
                 NormalizedName = "TECHNICAL"
             },
             new IdentityRole
             {
                 Id = "ROLE_USER",
+                ConcurrencyStamp = "86bf3845-f7bf-4488-b442-5035f4ec4ff7",
                 Name = "User",
                 NormalizedName = "USER"
             }
@@ -84,6 +88,19 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
                 .OnDelete(DeleteBehavior.Restrict);
 
             entity.HasIndex(c => new { c.TicketId, c.CreatedAtUtc });
+        });
+
+        modelBuilder.Entity<Setting>(entity =>
+        {
+            entity.HasKey(e => e.Key);
+            entity.Property(e => e.Key).HasMaxLength(128).IsRequired();
+            entity.Property(e => e.Value).HasMaxLength(4000).IsRequired();
+
+            entity.HasData(new Setting
+            {
+                Key = SettingKeys.EmailNotificationsEnabled,
+                Value = SettingValue.FromBool(false)
+            });
         });
     }
 

@@ -115,16 +115,17 @@
             document.getElementById('add-Password-display').value = '';
             document.getElementById('add-Password').value = '';
         });
-        function generatePassword() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@@#$%';
-            let pwd = '';
-            for (let i = 0; i < 12; i++) pwd += chars.charAt(Math.floor(Math.random() * chars.length));
-            return pwd;
-        }
         document.getElementById('add-pwd-generate').addEventListener('click', function () {
-            const pwd = generatePassword();
-            document.getElementById('add-Password-display').value = pwd;
-            document.getElementById('add-Password').value = pwd;
+            const btn = this;
+            btn.disabled = true;
+            fetch('@Url.Action("GeneratePassword", "Team")', { method: 'GET', headers: { 'Accept': 'application/json' } })
+                .then(r => r.ok ? r.json() : Promise.reject())
+                .then(data => {
+                    const pwd = data.password || '';
+                    document.getElementById('add-Password-display').value = pwd;
+                    document.getElementById('add-Password').value = pwd;
+                })
+                .finally(() => { btn.disabled = false; });
         });
         document.getElementById('add-pwd-copy').addEventListener('click', function () {
             const pwd = document.getElementById('add-Password-display').value;

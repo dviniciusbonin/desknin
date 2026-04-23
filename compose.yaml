@@ -5,20 +5,46 @@
     build:
       context: .
       dockerfile: DeskNin/Dockerfile
-  
+    depends_on:
+      database:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    env_file:
+      - .env
+    ports:
+      - '8080:8080'
+    working_dir: /app
+
+
+  migrator:
+    image: mcr.microsoft.com/dotnet/sdk:10.0
+    container_name: desknin-migrator
+    working_dir: /src
+    volumes:
+      - ./:/src
+    env_file:
+      - .env
+    depends_on:
+      database:
+        condition: service_healthy
+    command: sh -c "export PATH=$PATH:/root/.dotnet/tools && dotnet tool install --global dotnet-ef && dotnet restore DeskNin/DeskNin.csproj && dotnet ef database update --project DeskNin/DeskNin.csproj --startup-project DeskNin/DeskNin.csproj"
+
   database:
     container_name: desknin-database
     image: postgres:15
     environment:
-      POSTGRES_USER: desknin-app
-      POSTGRES_PASSWORD: desknin
-      POSTGRES_DB: desknin
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER}']
+      test: ['CMD-SHELL', 'pg_isready -U ${DB_USER} -d ${DB_NAME}']
       interval: 5s
       timeout: 5s
       retries: 5
