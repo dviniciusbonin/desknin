@@ -29,18 +29,21 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             new IdentityRole
             {
                 Id = "ROLE_ADMIN",
+                ConcurrencyStamp = "ed8b48f3-261a-465c-a340-0fbbd3c5c8e4",
                 Name = "Admin",
                 NormalizedName = "ADMIN"
             },
             new IdentityRole
             {
                 Id = "ROLE_TECHNICAL",
+                ConcurrencyStamp = "f30c6299-89f3-49a3-92ed-d9105a69be0a",
                 Name = "Technical",
                 NormalizedName = "TECHNICAL"
             },
             new IdentityRole
             {
                 Id = "ROLE_USER",
+                ConcurrencyStamp = "86bf3845-f7bf-4488-b442-5035f4ec4ff7",
                 Name = "User",
                 NormalizedName = "USER"
             }

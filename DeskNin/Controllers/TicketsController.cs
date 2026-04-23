@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using DeskNin.Data;
 using DeskNin.Models;
+using DeskNin.Services;
 using DeskNin.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,10 +11,16 @@ using Microsoft.EntityFrameworkCore;
 namespace DeskNin.Controllers;
 
 [Authorize]
-public class TicketsController(ApplicationDbContext context, UserManager<IdentityUser> userManager) : Controller
+public class TicketsController(
+    ApplicationDbContext context,
+    UserManager<IdentityUser> userManager,
+    ITicketNotificationService ticketNotificationService,
+    ILogger<TicketsController> logger) : Controller
 {
     private readonly ApplicationDbContext _context = context;
     private readonly UserManager<IdentityUser> _userManager = userManager;
+    private readonly ITicketNotificationService _ticketNotificationService = ticketNotificationService;
+    private readonly ILogger<TicketsController> _logger = logger;
 
     [Authorize(Roles = "Admin,Technical")]
     public async Task<IActionResult> Index(TicketStatus? status = null, bool assignedToMe = false)
@@ -229,6 +236,7 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
         ticket.UpdatedAtUtc = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+        await NotifyUpdateAsync(ticket, "details updated", "Title/description or priority was edited.");
         return RedirectToAction(nameof(Details), new { id = ticket.Id });
     }
 
@@ -244,20 +252,27 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
         if (!ticket.CanManageWorkflow)
             return RedirectToAction(nameof(Details), new { id });
 
+        string assignmentSummary;
         if (!string.IsNullOrWhiteSpace(assignedTechnicianId))
         {
-            var exists = await _context.Users.AnyAsync(u => u.Id == assignedTechnicianId);
-            if (!exists)
+            var assignee = await _context.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == assignedTechnicianId);
+            if (assignee == null)
                 return NotFound();
             ticket.AssignedTechnicianId = assignedTechnicianId;
+            var assigneeName = assignee.UserName ?? assignee.Email ?? assignee.Id;
+            assignmentSummary = $"Assigned technician: {assigneeName}.";
         }
         else
         {
             ticket.AssignedTechnicianId = null;
+            assignmentSummary = "Ticket is now unassigned.";
         }
 
         ticket.UpdatedAtUtc = DateTime.UtcNow;
         await _context.SaveChangesAsync();
+        await NotifyUpdateAsync(ticket, "assignment updated", assignmentSummary);
         return RedirectToAction(nameof(Details), new { id });
     }
 
@@ -275,6 +290,7 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
 
         ticket.ChangeStatus(status, DateTime.UtcNow);
         await _context.SaveChangesAsync();
+        await NotifyUpdateAsync(ticket, "status updated", $"Status changed to {status}.");
 
         return RedirectToAction(nameof(Details), new { id });
     }
@@ -294,6 +310,7 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
         ticket.Priority = priority;
         ticket.UpdatedAtUtc = DateTime.UtcNow;
         await _context.SaveChangesAsync();
+        await NotifyUpdateAsync(ticket, "priority updated", $"Priority changed to {priority}.");
 
         return RedirectToAction(nameof(Details), new { id });
     }
@@ -323,6 +340,7 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
         ticket.UpdatedAtUtc = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
+        await NotifyUpdateAsync(ticket, "new comment", "A new comment was added to this ticket.");
         return RedirectToAction(nameof(Details), new { id = form.TicketId });
     }
 
@@ -354,5 +372,21 @@ public class TicketsController(ApplicationDbContext context, UserManager<Identit
                 Name = u.UserName ?? u.Email ?? u.Id
             })
             .ToList();
+    }
+
+    private async Task NotifyUpdateAsync(Ticket ticket, string eventLabel, string changeSummary)
+    {
+        var actorId = GetCurrentUserId();
+        if (string.IsNullOrWhiteSpace(actorId))
+            return;
+
+        try
+        {
+            await _ticketNotificationService.NotifyTicketUpdatedAsync(ticket, actorId, eventLabel, changeSummary);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to notify ticket update for ticket {TicketId}", ticket.Id);
+        }
     }
 }

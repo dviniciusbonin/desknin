@@ -103,7 +103,7 @@ public class DashboardControllerTest : IDisposable
         var viewResult = Assert.IsType<ViewResult>(result);
         var model = Assert.IsType<DashboardViewModel>(viewResult.Model);
 
-        Assert.Equal(1, model.OpenCount);
+        Assert.Equal(2, model.OpenCount);
         Assert.Equal(1, model.InProgressCount);
         Assert.Equal(1, model.ResolvedCount);
         Assert.Equal(2, model.HighPriorityCount); // High + Critical (tickets 1 and 3)

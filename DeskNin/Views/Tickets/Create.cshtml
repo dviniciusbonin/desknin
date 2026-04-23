@@ -6,6 +6,10 @@
 }
 
 <div class="mx-auto" style="max-width: 900px;">
+    @{
+        var isBasicUser = User.IsInRole("User") && !User.IsInRole("Admin") && !User.IsInRole("Technical");
+        var cancelAction = isBasicUser ? "MyTickets" : "Index";
+    }
     <header class="mb-4">
         <h1 class="h3 fw-bold mb-1">Create ticket</h1>
         <p class="text-body-secondary small mb-0">Submit a new support request.</p>
@@ -36,7 +40,7 @@
 
                 <div class="d-flex flex-wrap gap-2">
                     <button type="submit" class="btn btn-primary rounded-2">Create</button>
-                    <a asp-action="Index" class="btn btn-outline-secondary rounded-2">Cancel</a>
+                    <a asp-action="@cancelAction" class="btn btn-outline-secondary rounded-2">Cancel</a>
                 </div>
             </form>
         </div>

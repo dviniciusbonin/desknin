@@ -7,6 +7,10 @@
 
 <div class="d-flex flex-column gap-4">
     <header class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+        @{
+            var isBasicUser = User.IsInRole("User") && !User.IsInRole("Admin") && !User.IsInRole("Technical");
+            var backAction = isBasicUser ? "MyTickets" : "Index";
+        }
         <div>
             <h1 class="h3 fw-bold mb-1">@Model.Ticket.Title</h1>
             <p class="text-body-secondary small mb-0">Ticket #@Model.Ticket.Id</p>
@@ -16,7 +20,7 @@
             {
                 <a asp-action="Edit" asp-route-id="@Model.Ticket.Id" class="btn btn-outline-secondary rounded-2">Edit</a>
             }
-            <a asp-action="Index" class="btn btn-outline-secondary rounded-2">Back to list</a>
+            <a asp-action="@backAction" class="btn btn-outline-secondary rounded-2">Back to list</a>
         </div>
     </header>
 
