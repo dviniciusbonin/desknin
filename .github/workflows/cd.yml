@@ -66,44 +66,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - name: Preflight secrets and vars
-        env:
-          LAB_IP: ${{ secrets.LAB_IP }}
-          LAB_SSH_USER: ${{ secrets.LAB_SSH_USER }}
-          LAB_SSH_KEY: ${{ secrets.LAB_SSH_KEY }}
-          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
-          CONNECTION_STRING: ${{ secrets.CONNECTION_STRING }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          RESEND_FROM_EMAIL: ${{ secrets.RESEND_FROM_EMAIL }}
-          APP_NAME: ${{ vars.APP_NAME }}
-          APP_HOST: ${{ vars.APP_HOST }}
-          APP_PORT: ${{ vars.APP_PORT }}
-        run: |
-          set -euo pipefail
-          missing=0
-          check() {
-            local name="$1" value="$2"
-            if [ -z "$value" ]; then
-              echo "::error::$name is empty (check Environment 'production' secrets/vars)"
-              missing=1
-            else
-              echo "$name length=${#value}"
-            fi
-          }
-          check LAB_IP "$LAB_IP"
-          check LAB_SSH_USER "$LAB_SSH_USER"
-          check LAB_SSH_KEY "$LAB_SSH_KEY"
-          check GHCR_TOKEN "$GHCR_TOKEN"
-          check CONNECTION_STRING "$CONNECTION_STRING"
-          check RESEND_API_KEY "$RESEND_API_KEY"
-          check RESEND_FROM_EMAIL "$RESEND_FROM_EMAIL"
-          check APP_NAME "$APP_NAME"
-          check APP_HOST "$APP_HOST"
-          check APP_PORT "$APP_PORT"
-          if [ "$missing" -ne 0 ]; then
-            exit 1
-          fi
-
       - uses: appleboy/ssh-action@v1.2.0
         env:
           IMAGE: ghcr.io/${{ needs.build.outputs.image-name }}:${{ needs.build.outputs.image-tag }}
@@ -119,20 +81,13 @@ jobs:
           host: ${{ secrets.LAB_IP }}
           username: ${{ secrets.LAB_SSH_USER }}
           key: ${{ secrets.LAB_SSH_KEY }}
-          port: 22
-          debug: true
-          command_timeout: 20m
           envs: IMAGE,GHCR_USER,GHCR_TOKEN,APP_NAME,APP_HOST,APP_PORT,CONNECTION_STRING,RESEND_API_KEY,RESEND_FROM_EMAIL
           script: |
             set -euo pipefail
 
-            echo "==> docker login"
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "${GHCR_USER:-github}" --password-stdin
-
-            echo "==> docker pull $IMAGE"
             docker pull "$IMAGE"
 
-            echo "==> migrate"
             docker run --rm \
               --name "${APP_NAME}-migrate" \
               --network traefik_edge \
@@ -140,7 +95,6 @@ jobs:
               "$IMAGE" \
               --migrate
 
-            echo "==> replace app container"
             docker rm -f "$APP_NAME" 2>/dev/null || true
             docker run -d --name "$APP_NAME" --restart unless-stopped \
               --network traefik_edge \
@@ -156,5 +110,3 @@ jobs:
               -l "traefik.http.routers.${APP_NAME}.tls.certresolver=le" \
               -l "traefik.http.services.${APP_NAME}.loadbalancer.server.port=${APP_PORT}" \
               "$IMAGE"
-
-            echo "==> deploy done"
