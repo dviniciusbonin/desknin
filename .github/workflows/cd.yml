@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    branches: [main, chore/deploy]
+    branches: [main]
   workflow_dispatch:
     inputs:
       image_tag:
@@ -31,7 +31,7 @@ jobs:
       image-tag: ${{ steps.meta.outputs.tag }}
       image-name: ${{ steps.meta.outputs.image }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Image meta
         id: meta
