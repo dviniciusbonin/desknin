@@ -33,6 +33,20 @@ builder.Services.AddHttpClient<IAppEmailSender, ResendEmailSender>();
 
 var app = builder.Build();
 
+if (args.Contains("--migrate"))
+{
+    var logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Migrate");
+    logger.LogInformation("Applying EF Core migrations...");
+    using (var scope = app.Services.CreateScope())
+    {
+        var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        await db.Database.MigrateAsync();
+    }
+
+    logger.LogInformation("Migrations applied.");
+    return;
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
