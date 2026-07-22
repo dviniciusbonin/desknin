@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.gitignore
+Dockerfile
+compose.yml
+README.md
+CLAUDE.md
+AGENTS.md
+*.md
+.env*
+!.env.example
+.DS_Store
+npm-debug.log*

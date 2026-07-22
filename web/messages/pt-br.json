@@ -1,0 +1,293 @@
+{
+  "meta": {
+    "title": "DeskNin — Gestão moderna de tickets",
+    "description": "O DeskNin ajuda equipes a organizar, acompanhar e resolver solicitações de suporte em um único painel.",
+    "onboardingTitle": "Onboarding",
+    "onboardingDescription": "Crie seu workspace DeskNin e a primeira conta de administrador em minutos.",
+    "loginTitle": "Entrar",
+    "loginDescription": "Entre no seu workspace DeskNin para gerenciar tickets e suporte.",
+    "forgotPasswordTitle": "Esqueceu a senha",
+    "forgotPasswordDescription": "Solicite um link para redefinir a senha do seu workspace DeskNin."
+  },
+  "nav": {
+    "features": "Recursos",
+    "plans": "Planos",
+    "faq": "FAQ",
+    "contact": "Contato",
+    "getStarted": "Começar",
+    "signIn": "Entrar",
+    "home": "Início DeskNin",
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "openMenu": "Abrir menu",
+    "closeMenu": "Fechar menu",
+    "menu": "Menu"
+  },
+  "theme": {
+    "label": "Tema",
+    "light": "Claro",
+    "dark": "Escuro"
+  },
+  "locale": {
+    "label": "Idioma"
+  },
+  "backToTop": "Voltar ao topo",
+  "hero": {
+    "heading": "Organize o suporte com um sistema moderno de tickets",
+    "supporting": "Organize, atribua e resolva solicitações em um só lugar—para sua equipe ficar alinhada e nada se perder.",
+    "cta": "Começar teste grátis"
+  },
+  "plans": {
+    "heading": "Teste grátis por uma semana e continue por R$ 29,90",
+    "supporting": "Comece com 7 dias grátis e depois continue no Standard (até 50 usuários)—mensal ou anual. Precisa de mais usuários? Fale conosco para negociar.",
+    "billingLabel": "Cobrança",
+    "billingMonthly": "Mensal",
+    "billingAnnual": "Anual",
+    "annualSave": "Economize R$ 59,80",
+    "trial": {
+      "name": "Teste grátis",
+      "price": "R$ 0",
+      "period": "por 1 semana",
+      "description": "Acesso completo para experimentar o DeskNin com sua equipe antes de decidir.",
+      "features": ["Todos os recursos principais", "Fluxo de tickets e papéis", "Encerra automaticamente após 7 dias"],
+      "cta": "Começar teste grátis"
+    },
+    "standard": {
+      "name": "Standard",
+      "price": "R$ 29,90",
+      "period": "por mês",
+      "annualPrice": "R$ 299",
+      "annualPeriod": "por ano",
+      "annualHint": "Cobrado uma vez ao ano · cerca de R$ 24,92/mês",
+      "description": "Tudo o que você precisa para operar o suporte no dia a dia—para equipes de até 50 usuários.",
+      "features": ["Até 50 usuários", "Tickets ilimitados", "Papéis e atribuição", "Notificações por e-mail"],
+      "cta": "Começar com Standard"
+    },
+    "unlimited": {
+      "name": "Usuários ilimitados",
+      "price": "Sob consulta",
+      "period": "por acordo",
+      "description": "Para empresas que precisam de mais de 50 usuários. Fale conosco para negociar um plano sob medida.",
+      "features": ["Usuários ilimitados", "Limites e suporte sob medida", "Condições comerciais personalizadas"],
+      "cta": "Contatar para negociar"
+    }
+  },
+  "contact": {
+    "heading": "Fale conosco",
+    "supporting": "Dúvidas sobre o DeskNin, acesso antecipado ou usuários ilimitados para sua empresa? Fale conosco no WhatsApp e retornamos.",
+    "cta": "Conversar no WhatsApp",
+    "whatsappMessage": "Olá DeskNin! Gostaria de saber mais.",
+    "negotiateMessage": "Olá DeskNin! Gostaria de negociar um plano com usuários ilimitados."
+  },
+  "footer": {
+    "tagline": "Gestão de tickets para equipes modernas.",
+    "legal": "Legal"
+  },
+  "features": {
+    "heading": "Tudo o que sua equipe de suporte precisa",
+    "supporting": "Da entrada à resolução, o DeskNin organiza as solicitações para sua equipe focar nas pessoas—não em planilhas.",
+    "items": [
+      {
+        "title": "Fluxo de tickets",
+        "description": "Capture, priorize e feche solicitações com um caminho de status claro para todo o time."
+      },
+      {
+        "title": "Papéis e atribuição",
+        "description": "Dê a admins, agentes e visualizadores o acesso certo e atribua o trabalho a quem deve ser dono."
+      },
+      {
+        "title": "Notificações por e-mail",
+        "description": "Mantenha clientes e colegas atualizados quando os tickets avançam—sem cobrar status no chat."
+      },
+      {
+        "title": "Feito para times globais",
+        "description": "Defina país, fuso horário e idioma de suporte no onboarding para o workspace bater com sua operação."
+      }
+    ]
+  },
+  "faq": {
+    "heading": "Perguntas frequentes",
+    "supporting": "Respostas rápidas sobre trial, preços e como o DeskNin se encaixa na sua equipe.",
+    "items": [
+      {
+        "question": "O que acontece depois do teste grátis?",
+        "answer": "O trial de 7 dias dá acesso completo para experimentar o DeskNin. Ao terminar, escolha o Standard (mensal ou anual) ou fale conosco se precisar de mais de 50 usuários."
+      },
+      {
+        "question": "Quantos usuários entram no Standard?",
+        "answer": "O Standard inclui até 50 usuários. Se sua empresa precisar de mais, o plano de usuários ilimitados é negociado com nosso time."
+      },
+      {
+        "question": "Posso pagar anualmente?",
+        "answer": "Sim. O Standard custa R$ 29,90 por mês ou R$ 299 por ano—economizando R$ 59,80 em relação ao pagamento mensal."
+      },
+      {
+        "question": "Quais idiomas o DeskNin suporta?",
+        "answer": "O site está disponível em inglês, português (Brasil) e espanhol. No onboarding você também escolhe o idioma padrão do suporte."
+      },
+      {
+        "question": "Meus dados ficam isolados por workspace?",
+        "answer": "Cada empresa tem seu próprio workspace com acesso por papéis para admins e agentes. O DeskNin é pensado para isolamento multi-tenant desde o início."
+      }
+    ]
+  },
+  "finalCta": {
+    "heading": "Pronto para organizar o suporte?",
+    "supporting": "Crie seu workspace em minutos e teste o DeskNin grátis por uma semana.",
+    "cta": "Começar teste grátis"
+  },
+  "privacy": {
+    "title": "Política de Privacidade",
+    "updated": "Última atualização: 22 de julho de 2026",
+    "intro": "Esta Política de Privacidade explica como o DeskNin coleta, usa e protege informações quando você usa nosso site e formulários de onboarding.",
+    "sections": [
+      {
+        "heading": "Informações que coletamos",
+        "body": "No onboarding, podemos coletar dados da empresa, contato do admin, país, fuso horário, idioma de suporte, plano escolhido e, opcionalmente, site ou telefone. Também coletamos dados técnicos básicos, como navegador e páginas visitadas, para confiabilidade do site."
+      },
+      {
+        "heading": "Como usamos as informações",
+        "body": "Usamos essas informações para provisionar seu workspace, responder a contatos comerciais ou de suporte, melhorar o produto e comunicar sobre sua conta ou trial."
+      },
+      {
+        "heading": "Compartilhamento",
+        "body": "Não vendemos informações pessoais. Podemos compartilhar dados com provedores de infraestrutura que nos ajudam a hospedar e operar o DeskNin, sob acordos de confidencialidade."
+      },
+      {
+        "heading": "Retenção",
+        "body": "Mantemos dados de onboarding e conta pelo tempo necessário para prestar o serviço e cumprir obrigações legais. Você pode solicitar a exclusão de dados de onboarding entrando em contato conosco."
+      },
+      {
+        "heading": "Contato",
+        "body": "Para dúvidas de privacidade, envie e-mail para hello@desknin.com."
+      }
+    ]
+  },
+  "terms": {
+    "title": "Termos de Uso",
+    "updated": "Última atualização: 22 de julho de 2026",
+    "intro": "Estes Termos regem o uso do site DeskNin e da experiência de early access / onboarding.",
+    "sections": [
+      {
+        "heading": "Serviço",
+        "body": "O DeskNin oferece software de gestão de tickets. Recursos, preços e disponibilidade podem mudar conforme o produto evolui. O acesso trial é para avaliação e pode encerrar automaticamente após sete dias."
+      },
+      {
+        "heading": "Contas",
+        "body": "Você é responsável por informações de onboarding corretas e por manter as credenciais de admin seguras. Use o DeskNin em conformidade com as leis aplicáveis e sem abusar do serviço."
+      },
+      {
+        "heading": "Planos e cobrança",
+        "body": "O Standard é limitado a 50 usuários e pode ser cobrado mensal ou anualmente. Planos com usuários ilimitados exigem acordo comercial separado. No Brasil, os valores são apresentados em reais (BRL)."
+      },
+      {
+        "heading": "Isenção",
+        "body": "O site e o serviço inicial são oferecidos conforme disponíveis. Na máxima extensão permitida por lei, o DeskNin isenta garantias não expressamente previstas em contrato assinado."
+      },
+      {
+        "heading": "Contato",
+        "body": "Dúvidas sobre estes Termos podem ser enviadas para hello@desknin.com."
+      }
+    ]
+  },
+  "onboarding": {
+    "heading": "Crie seu workspace",
+    "supporting": "Conte sobre sua empresa e a operação de suporte para provisionarmos o DeskNin na sua região.",
+    "sections": {
+      "company": "Empresa",
+      "admin": "Conta de administrador",
+      "region": "Região e suporte",
+      "plan": "Plano"
+    },
+    "companyName": "Nome da empresa",
+    "website": "Site da empresa",
+    "websiteOptional": "opcional",
+    "companySize": "Porte da empresa",
+    "companySizePlaceholder": "Selecione o porte",
+    "companySizes": {
+      "1-10": "1–10 pessoas",
+      "11-50": "11–50 pessoas",
+      "51-200": "51–200 pessoas",
+      "201-1000": "201–1.000 pessoas",
+      "1000+": "1.000+ pessoas"
+    },
+    "adminName": "Nome completo do admin",
+    "adminEmail": "E-mail do admin",
+    "adminPhone": "Telefone do admin",
+    "adminPhoneOptional": "opcional",
+    "country": "País",
+    "countryPlaceholder": "Selecione o país",
+    "timezone": "Fuso horário",
+    "timezonePlaceholder": "Selecione o fuso",
+    "supportLanguage": "Idioma padrão do suporte",
+    "planLegend": "Plano",
+    "planTrial": "Teste grátis (1 semana)",
+    "planStandard": "Standard (até 50 usuários)",
+    "billingLegend": "Ciclo de cobrança",
+    "billingMonthly": "Mensal — R$ 29,90/mês",
+    "billingAnnual": "Anual — R$ 299/ano (economize R$ 59,80)",
+    "submit": "Criar workspace",
+    "submitting": "Criando workspace…",
+    "successTitle": "Workspace criado",
+    "backHome": "Voltar ao início",
+    "errors": {
+      "companyName": "Informe o nome da empresa.",
+      "website": "Informe uma URL válida (https://…).",
+      "companySize": "Selecione o porte da empresa.",
+      "adminName": "Informe o nome completo do admin.",
+      "adminEmail": "Informe um e-mail corporativo válido.",
+      "adminPhone": "Informe um telefone válido.",
+      "country": "Selecione um país.",
+      "timezone": "Selecione um fuso horário.",
+      "supportLanguage": "Escolha o idioma do suporte.",
+      "plan": "Escolha um plano.",
+      "billingCycle": "Escolha cobrança mensal ou anual.",
+      "generic": "Corrija os campos destacados.",
+      "api": "Não foi possível criar o workspace agora. Tente novamente em instantes.",
+      "network": "Não foi possível alcançar o serviço de provisionamento. Tente novamente."
+    },
+    "successMessage": "O workspace “{company}” está pronto. Entre com {email} quando solicitado."
+  },
+  "login": {
+    "heading": "Entrar no DeskNin",
+    "supporting": "Informe seu e-mail corporativo e senha para acessar o workspace.",
+    "email": "E-mail",
+    "password": "Senha",
+    "rememberMe": "Lembrar de mim",
+    "submit": "Entrar",
+    "submitting": "Entrando…",
+    "forgotPassword": "Esqueceu a senha?",
+    "noAccount": "Ainda não tem um workspace?",
+    "createWorkspace": "Iniciar onboarding",
+    "showPassword": "Mostrar senha",
+    "hidePassword": "Ocultar senha",
+    "backHome": "Voltar ao início",
+    "successTitle": "Sessão iniciada",
+    "successMessage": "Bem-vindo de volta. Você já pode continuar para o workspace.",
+    "errors": {
+      "email": "Informe um e-mail válido.",
+      "password": "Informe sua senha.",
+      "invalid": "E-mail ou senha inválidos.",
+      "locked": "Esta conta está temporariamente bloqueada. Tente novamente mais tarde.",
+      "generic": "Corrija os campos destacados.",
+      "api": "Não foi possível entrar agora. Tente novamente.",
+      "network": "Não foi possível alcançar o serviço de autenticação. Tente novamente."
+    }
+  },
+  "forgotPassword": {
+    "heading": "Esqueceu a senha?",
+    "supporting": "Informe seu e-mail corporativo e enviaremos um link de redefinição se a conta existir.",
+    "email": "E-mail",
+    "submit": "Enviar link",
+    "submitting": "Enviando…",
+    "backToLogin": "Voltar para entrar",
+    "successTitle": "Verifique seu e-mail",
+    "successMessage": "Se existir uma conta com esse e-mail, enviamos um link para redefinir a senha.",
+    "errors": {
+      "email": "Informe um e-mail válido.",
+      "generic": "Corrija os campos destacados.",
+      "api": "Não foi possível enviar o e-mail agora. Tente novamente.",
+      "network": "Não foi possível alcançar o serviço de autenticação. Tente novamente."
+    }
+  }
+}

@@ -1,0 +1,293 @@
+{
+  "meta": {
+    "title": "DeskNin — Modern ticket management",
+    "description": "DeskNin helps teams organize, track, and resolve support requests from a single dashboard.",
+    "onboardingTitle": "Onboarding",
+    "onboardingDescription": "Create your DeskNin workspace and your first admin account in minutes.",
+    "loginTitle": "Sign in",
+    "loginDescription": "Sign in to your DeskNin workspace to manage tickets and support.",
+    "forgotPasswordTitle": "Forgot password",
+    "forgotPasswordDescription": "Request a password reset link for your DeskNin workspace."
+  },
+  "nav": {
+    "features": "Features",
+    "plans": "Plans",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "getStarted": "Get started",
+    "signIn": "Sign in",
+    "home": "DeskNin home",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menu": "Menu"
+  },
+  "theme": {
+    "label": "Theme",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "locale": {
+    "label": "Language"
+  },
+  "backToTop": "Back to top",
+  "hero": {
+    "heading": "Streamline support with a modern ticket system",
+    "supporting": "Organize, assign, and resolve requests from one place—so your team stays in sync and nothing slips through.",
+    "cta": "Start free trial"
+  },
+  "plans": {
+    "heading": "Try free for a week, then stay simple at $5",
+    "supporting": "Start with a 7-day free trial, then continue on Standard (up to 50 users)—monthly or annual. Need more users? Contact us to negotiate.",
+    "billingLabel": "Billing",
+    "billingMonthly": "Monthly",
+    "billingAnnual": "Annual",
+    "annualSave": "Save $10",
+    "trial": {
+      "name": "Free trial",
+      "price": "$0",
+      "period": "for 1 week",
+      "description": "Full access to try DeskNin with your team before you commit.",
+      "features": ["All core features", "Ticket workflow & roles", "Ends automatically after 7 days"],
+      "cta": "Start free trial"
+    },
+    "standard": {
+      "name": "Standard",
+      "price": "$5",
+      "period": "per month",
+      "annualPrice": "$50",
+      "annualPeriod": "per year",
+      "annualHint": "Billed once a year · about $4.17/mo",
+      "description": "Everything you need to run support day to day—for teams of up to 50 users.",
+      "features": ["Up to 50 users", "Unlimited tickets", "Team roles & assignment", "Email notifications"],
+      "cta": "Start with Standard"
+    },
+    "unlimited": {
+      "name": "Unlimited users",
+      "price": "Custom",
+      "period": "by agreement",
+      "description": "For companies that need more than 50 users. Contact us to negotiate a plan that fits your scale.",
+      "features": ["Unlimited users", "Tailored limits & support", "Custom commercial terms"],
+      "cta": "Contact to negotiate"
+    }
+  },
+  "contact": {
+    "heading": "Talk with us",
+    "supporting": "Questions about DeskNin, early access, or unlimited users for your company? Message us on WhatsApp and we will get back to you.",
+    "cta": "Chat on WhatsApp",
+    "whatsappMessage": "Hi DeskNin! I’d like to learn more.",
+    "negotiateMessage": "Hi DeskNin! I’d like to negotiate an unlimited-users plan."
+  },
+  "footer": {
+    "tagline": "Ticket management for modern teams.",
+    "legal": "Legal"
+  },
+  "features": {
+    "heading": "Everything your support team needs",
+    "supporting": "From intake to resolution, DeskNin keeps requests organized so your team can focus on people—not spreadsheets.",
+    "items": [
+      {
+        "title": "Ticket workflow",
+        "description": "Capture, prioritize, and close requests with a clear status path your whole team understands."
+      },
+      {
+        "title": "Roles & assignment",
+        "description": "Give admins, agents, and viewers the right access, then assign work to the person who should own it."
+      },
+      {
+        "title": "Email notifications",
+        "description": "Keep customers and teammates updated when tickets move—without chasing status in chat threads."
+      },
+      {
+        "title": "Built for global teams",
+        "description": "Set country, timezone, and support language at onboarding so your workspace matches how you operate."
+      }
+    ]
+  },
+  "faq": {
+    "heading": "Frequently asked questions",
+    "supporting": "Quick answers about trial, pricing, and how DeskNin fits your team.",
+    "items": [
+      {
+        "question": "What happens after the free trial?",
+        "answer": "The 7-day trial gives full access to try DeskNin. When it ends, choose Standard (monthly or annual) or contact us if you need more than 50 users."
+      },
+      {
+        "question": "How many users are included in Standard?",
+        "answer": "Standard includes up to 50 users. If your company needs more, the Unlimited users plan is negotiated with our team."
+      },
+      {
+        "question": "Can I pay yearly?",
+        "answer": "Yes. Standard is $5 per month or $50 per year—saving $10 compared with paying month to month."
+      },
+      {
+        "question": "Which languages does DeskNin support?",
+        "answer": "The product site is available in English, Portuguese (Brazil), and Spanish. You also choose a default support language during onboarding."
+      },
+      {
+        "question": "Is my workspace data isolated?",
+        "answer": "Each company gets its own workspace with role-based access for admins and agents. We design DeskNin for multi-tenant isolation from day one."
+      }
+    ]
+  },
+  "finalCta": {
+    "heading": "Ready to streamline support?",
+    "supporting": "Create your workspace in minutes and try DeskNin free for one week.",
+    "cta": "Start free trial"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "updated": "Last updated: July 22, 2026",
+    "intro": "This Privacy Policy explains how DeskNin collects, uses, and protects information when you use our website and onboarding forms.",
+    "sections": [
+      {
+        "heading": "Information we collect",
+        "body": "When you start onboarding, we may collect company details, admin contact information, country, timezone, preferred support language, plan selection, and optional website or phone number. We also collect basic technical data such as browser type and pages visited for site reliability."
+      },
+      {
+        "heading": "How we use information",
+        "body": "We use this information to provision your workspace, respond to sales or support inquiries, improve the product, and communicate about your account or trial."
+      },
+      {
+        "heading": "Sharing",
+        "body": "We do not sell personal information. We may share data with infrastructure providers that help us host and operate DeskNin, under agreements that protect confidentiality."
+      },
+      {
+        "heading": "Retention",
+        "body": "We retain onboarding and account information for as long as needed to provide the service and meet legal obligations. You may request deletion of onboarding data by contacting us."
+      },
+      {
+        "heading": "Contact",
+        "body": "For privacy questions, email hello@desknin.com."
+      }
+    ]
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "updated": "Last updated: July 22, 2026",
+    "intro": "These Terms govern your use of the DeskNin website and early access / onboarding experience.",
+    "sections": [
+      {
+        "heading": "Service",
+        "body": "DeskNin provides ticket management software. Features, pricing, and availability may change as we expand the product. Trial access is offered for evaluation and may end automatically after seven days."
+      },
+      {
+        "heading": "Accounts",
+        "body": "You are responsible for accurate onboarding information and for keeping admin credentials secure. You must use DeskNin in compliance with applicable laws and without abusing the service."
+      },
+      {
+        "heading": "Plans and billing",
+        "body": "Standard is limited to 50 users and may be billed monthly or annually. Unlimited-user plans require a separate commercial agreement. Fees are listed in USD unless otherwise stated."
+      },
+      {
+        "heading": "Disclaimer",
+        "body": "The website and early service are provided as available. To the fullest extent permitted by law, DeskNin disclaims warranties not expressly stated in a signed agreement."
+      },
+      {
+        "heading": "Contact",
+        "body": "Questions about these Terms can be sent to hello@desknin.com."
+      }
+    ]
+  },
+  "onboarding": {
+    "heading": "Create your workspace",
+    "supporting": "Tell us about your company and support setup so we can provision DeskNin for your region.",
+    "sections": {
+      "company": "Company",
+      "admin": "Admin account",
+      "region": "Region & support",
+      "plan": "Plan"
+    },
+    "companyName": "Company name",
+    "website": "Company website",
+    "websiteOptional": "optional",
+    "companySize": "Company size",
+    "companySizePlaceholder": "Select size",
+    "companySizes": {
+      "1-10": "1–10 people",
+      "11-50": "11–50 people",
+      "51-200": "51–200 people",
+      "201-1000": "201–1,000 people",
+      "1000+": "1,000+ people"
+    },
+    "adminName": "Admin full name",
+    "adminEmail": "Admin email",
+    "adminPhone": "Admin phone",
+    "adminPhoneOptional": "optional",
+    "country": "Country",
+    "countryPlaceholder": "Select country",
+    "timezone": "Timezone",
+    "timezonePlaceholder": "Select timezone",
+    "supportLanguage": "Default support language",
+    "planLegend": "Plan",
+    "planTrial": "Free trial (1 week)",
+    "planStandard": "Standard (up to 50 users)",
+    "billingLegend": "Billing cycle",
+    "billingMonthly": "Monthly — $5/mo",
+    "billingAnnual": "Annual — $50/yr (save $10)",
+    "submit": "Create workspace",
+    "submitting": "Creating workspace…",
+    "successTitle": "Workspace created",
+    "backHome": "Back to home",
+    "errors": {
+      "companyName": "Enter your company name.",
+      "website": "Enter a valid website URL (https://…).",
+      "companySize": "Select your company size.",
+      "adminName": "Enter the admin full name.",
+      "adminEmail": "Enter a valid work email.",
+      "adminPhone": "Enter a valid phone number.",
+      "country": "Select a country.",
+      "timezone": "Select a timezone.",
+      "supportLanguage": "Choose a support language.",
+      "plan": "Choose a plan.",
+      "billingCycle": "Choose monthly or annual billing.",
+      "generic": "Please fix the highlighted fields.",
+      "api": "We could not create your workspace right now. Please try again in a moment.",
+      "network": "We could not reach the provisioning service. Please try again."
+    },
+    "successMessage": "Workspace “{company}” is ready. Sign in with {email} when prompted."
+  },
+  "login": {
+    "heading": "Sign in to DeskNin",
+    "supporting": "Enter your work email and password to access your workspace.",
+    "email": "Email",
+    "password": "Password",
+    "rememberMe": "Remember me",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have a workspace yet?",
+    "createWorkspace": "Start onboarding",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "backHome": "Back to home",
+    "successTitle": "Signed in",
+    "successMessage": "Welcome back. You can continue to your workspace.",
+    "errors": {
+      "email": "Enter a valid email address.",
+      "password": "Enter your password.",
+      "invalid": "Invalid email or password.",
+      "locked": "This account is temporarily locked. Try again later.",
+      "generic": "Please fix the highlighted fields.",
+      "api": "We could not sign you in right now. Please try again.",
+      "network": "We could not reach the authentication service. Please try again."
+    }
+  },
+  "forgotPassword": {
+    "heading": "Forgot your password?",
+    "supporting": "Enter your work email and we will send a password reset link if an account exists.",
+    "email": "Email",
+    "submit": "Send reset link",
+    "submitting": "Sending…",
+    "backToLogin": "Back to sign in",
+    "successTitle": "Check your email",
+    "successMessage": "If an account exists for that email, a password reset link has been sent.",
+    "errors": {
+      "email": "Enter a valid email address.",
+      "generic": "Please fix the highlighted fields.",
+      "api": "We could not send the reset email right now. Please try again.",
+      "network": "We could not reach the authentication service. Please try again."
+    }
+  }
+}
