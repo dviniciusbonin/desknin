@@ -34,6 +34,7 @@ export function MobileNav({ locale, dictionary }: MobileNavProps) {
     }
 
     const previous = document.body.style.overflow;
+    const trigger = triggerRef.current;
     document.body.style.overflow = "hidden";
     closeButtonRef.current?.focus();
 
@@ -47,7 +48,7 @@ export function MobileNav({ locale, dictionary }: MobileNavProps) {
     return () => {
       document.body.style.overflow = previous;
       document.removeEventListener("keydown", onKeyDown);
-      triggerRef.current?.focus();
+      trigger?.focus();
     };
   }, [open]);
 
